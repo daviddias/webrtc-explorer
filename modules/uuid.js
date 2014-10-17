@@ -17,3 +17,4 @@ exports.gen = function () {
 exports.get = exports.uuid = function () {
   return uuid;
 };
+

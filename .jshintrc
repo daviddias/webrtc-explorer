@@ -14,6 +14,8 @@
   "unused": false,
   "node": true,
   "globals": {
-    "io": true
+    "io": true,
+    "log": true,
+    "localStorage": true
   }
 }
