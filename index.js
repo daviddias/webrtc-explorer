@@ -94,8 +94,6 @@ exports.createNode = function (config) {
     });
 
     railer.signal(peerInvite.signalData);
-
-
   }
 
   return ee;

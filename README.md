@@ -1,4 +1,4 @@
-canela
+webrtc-chord
 =======================================
 
 DHT wrapper for p2p communication in the browser
