@@ -60,9 +60,9 @@ to simplify, each node maintains a predecessor for gracious leaves (they say, I 
 4. `njr` generates his ID and asks for the node that is responsible for that ID (that will be the successor of `njr`)
 5. the `railing-node` acts as the mediator for `njr`, so that `njr` can meet his sucessor (and then the sucessor will hack as the mediator for the rest of the finger table);
 
-?? - Is our second Node int he 
-?? - Consider having a refreshing process to make sure all the nodes have the right finger table (through gossip or some sort)
-?? - Post fingertable from time to time to a server, and get it listed
+- ?? - Is our second Node int he 
+- ?? - Consider having a refreshing process to make sure all the nodes have the right finger table (through gossip or some sort)
+- ?? - Post fingertable from time to time to a server, and get it listed
 
 ### node leaves
 

@@ -16,6 +16,8 @@
   "globals": {
     "io": true,
     "log": true,
-    "localStorage": true
+    "localStorage": true,
+    "window": true,
+    "t": true
   }
 }

@@ -7,53 +7,99 @@ It enables you to communicate between several browsers in a p2p fashion.
 
 # How to create a node
 
-webrtc-chord uses browserify
+  webrtc-chord uses browserify
 
-```
-var chord = require('webrtc-chord');
+  ```
+  var chord = require('webrtc-chord');
 
-var nodeConfig = {
-  signalingURL: 'http://url-to-webrtc-chord-signaling-server.com'
-};
-var node = chord.createNode(nodeConfig);
-```
+  var nodeConfig = {
+    signalingURL: 'http://url-to-webrtc-chord-signaling-server.com'
+  };
+  var node = chord.createNode(nodeConfig);
+  ```
 
 # How to communicate with other nodes
 
 
-Send a message to a Node responsible for the ID `1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29`
+  Send a message to a Node responsible for the ID `1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29`
 
-```
-var nodeToSend = '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29'; // 160 bit ID represented in hex(git_sha1 is a good way to generate these)
+  ```
+  var nodeToSend = '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29'; // 160 bit ID represented in hex(git_sha1 is a good way to generate these)
 
-node.emit('message-send', { destID: '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29', 
-                            data: 'hey, how are you doing'});
-```
+  node.emit('message-send', { destID: '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29', 
+                              data: 'hey, how are you doing'});
+  ```
 
-Receive a message
-```
-node.on('message-receive', function(message) {
-  console.log(message.data);
-});
-```
+  Receive a message
+  ```
+  node.on('message-receive', function(message) {
+    console.log(message.data);
+  });
+  ```
 
 # Other options
 
-## finger table
+  ## finger table
 
-## logging
+  ## logging
 
-add the logging flag to your nodeConfig
+    add the logging flag to your nodeConfig
 
-var nodeConfig = {
-  signalingURL: 'http://url-to-webrtc-chord-signaling-server.com',
-  logging: true
-};
+    ```
+    var nodeConfig = {
+      //...
+      logging: true
+      //...
+    };
+    ```
 
-## tracing
+  ## tracing
 
-add a ton of traces for tests and other reasons
+    In order to understand the events which happen on the webrtc-chord network and their order, webrtc-chord using a tracing module ([`canela`](https://github.com/diasdavid/canela)).
 
-traces
+    To activate it, simply add tracing to your config:
 
-'trace-something'
+    ```
+    var nodeConfig = {
+      //...
+      tracing: true
+      //...
+    };
+    ```
+
+    Then, the returned EventEmitter from `.createChord()` will also emit the events described on the tracing DSL. Each trace has a specific id per tag, so it is easy to identify them automatically.
+
+    ### tracing DSL
+
+      ### tag: `signaling`
+        - id: 1    description: node connected to signaling server    
+        example: 
+        ```
+        {
+          id: 1,
+          description: 'node connected to signaling server'
+        }
+        ```
+        - id: 2    description: there are no other nodes present in the ring
+        example:
+        - id: 3    description: received a request to rail new peer into the ring
+        example:
+        - id: 4    description: connected to railing peer
+        example:
+        - id: 5    description: connected to sucessor 
+        example:
+        - id: 6    description: connected to entrace :number: of finger table
+        example:
+    
+      ### tag: `finger-table`
+        - id: 1    description: update    
+        example:
+
+      ### tag: `message`
+        - id: 1    description: receive   
+        example:
+        - id: 2    description: sent    
+        example:
+
+
+

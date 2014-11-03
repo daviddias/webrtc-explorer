@@ -4,8 +4,10 @@ var io = require('socket.io-client');
 var bows = require('bows'); 
 var fingerTable = require('./modules/fingerTable').createFingerTable();
 var uuid = require('./modules/uuid.js');
+var canela = require('canela');
 
 log = bows('webrtc-chord');
+t;
 
 exports = module.exports;
 
@@ -14,17 +16,19 @@ exports = module.exports;
 //   signalingURL: <IP or Host of webrtc-chord-signaling-server>
 //   namespace: defaults to /,
 //   logging: defaults to true,
-//   traces: defaults to false // emit events for connect events and finger table changes
+//   tracing: defaults to false // emit events for connect events and finger table changes
 // }
 // 
 exports.createNode = function (config) {
-  localStorage.debug = config.logging || true;
+  localStorage.debug = config.logging || false;
 
   var ee = new eventEmitter2({
     wildcard: true,
     newListener: false, 
     maxListeners: 50
   });
+
+  t = config.tracing ? canela.createTracer({emitter: ee}) : canela.createTracer({active:false});
 
   var url = (config.signalingURL || 'http://default.url') + (config.namespace || '/');
   var ioClient = io(url);
@@ -35,12 +39,17 @@ exports.createNode = function (config) {
   ioClient.on('c-request',  railNewPeer);
 
   function startBootstrapProcess() {
+    t.c('io client connection established', {});
+
     bootstrapPeer = new simplePeer({ initiator: true, trickle: false });
   
-    bootstrapPeer.on('signal', function (data) {        
+    bootstrapPeer.on('signal', function (data) {
+      t.c('bootstrapPeer signal data', data);
+
       var peerInvite = { signalData: data };
       ioClient.emit('s-request', peerInvite);
       log('Sent Simple Peer data to another Peer');
+      t.c('signal data sent to another peer', data);
     });
     
     bootstrapPeer.on('message', function (data) {
@@ -63,12 +72,14 @@ exports.createNode = function (config) {
   function receivedResponse (peerInvite) {
     if (peerInvite.peersAvailable === false) {
       log('There aren\'t other peers in the network currently');
+      t.c('There are no other peers available in the network', {});
       bootstrapPeer = null;
       // bootstrapPeer.destroy(); // would only destroy if it there was a connection
       // setTimeout(function () { startBootstrapProcess(); }, 5000);
       // this way both peers start trying to connect forever, the first shouldn't
     } else {
       log('Received signaling data from our RailingPeer');
+      t.c('');
       bootstrapPeer.signal(peerInvite.signalData);      
     }
   }
