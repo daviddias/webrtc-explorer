@@ -24,37 +24,28 @@ experiment('Test webrtc-chord functionality', function () {
     };
     
     pp.start(options, function(err) {
-      if (err) { 
-        console.log(err); process.exit(1); 
-      }
+      if (err) { console.log(err); process.exit(1); }
       startSignalingServer(done);
     });
   });
 
   function startSignalingServer(cb) {
     serverSignaling = spawn('node', ['./../../webrtc-chord-signaling-server/index.js']);
-    serverSignaling.stdout.on('data', function (data) {
-      // console.log('stdout: ' + data);
-    });
-    serverSignaling.stderr.on('data', function (data) {
-      // console.log('stderr: ' + data);
-    });
+    serverSignaling.stdout.on('data', function (data) { /* console.log('stdout: ' + data); */ });
+    serverSignaling.stderr.on('data', function (data) { /* console.log('stderr: ' + data); */ });
     
     setTimeout(function () { 
-      console.log('Signaling server has started');
+      console.log('Signaling server has started on:', serverSignaling.info.uri);
       cb(); 
     }, 1000);    
   }
 
-
   after(function (done) {
     setTimeout(function () { 
-      serverSignaling.on('close', function (code) {
-        // console.log('cp exited: ' + code);
-      });  
+      serverSignaling.on('close', function (code) { /* console.log('cp exited: ' + code); */ });  
       serverSignaling.kill();
-      pp.browserFarm.stop(function() { });
-      pp.close(function (){ });
+      pp.browserFarm.stop(function() {});
+      pp.close(function () {});
       done();
     }, 1000);
   });
@@ -76,13 +67,28 @@ experiment('Test webrtc-chord functionality', function () {
   });
 
   test('first node connects to the network', function (done) {
-    done();
+    var clientA = pp.clientManager.getClient(simpleIDs.A);
+    clientA.action('create-node', {});
+    setTimeout(function(){
+      // events 1 and 2 need to happen
+      // reset messages on clientA
+      done();
+    },1000);
+
+
   });
 
   test('second node connects to the network', function (done) {
-    done();
+    var clientA = pp.clientManager.getClient(simpleIDs.A);
+    var clientB = pp.clientManager.getClient(simpleIDs.B);
+    clientB.action('create-node', {});
+    setTimeout(function(){
+      // events 1 and 4 need to happen on client B
+      // event 3 need to happen on client A
+      // reset messages on clientA and clientB
+      done();
+    },1000);
   });
-
 
   // test('third node connects to the network', function (done){
 
