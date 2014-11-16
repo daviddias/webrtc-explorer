@@ -3,7 +3,6 @@ var Lab = require('lab');
 var Code = require('code');
 var lab = exports.lab = Lab.script();
 
-
 var experiment = lab.experiment;
 var test = lab.test;
 var before = lab.before;
@@ -11,10 +10,18 @@ var after = lab.after;
 var expect = Code.expect;
 
 var pp = require('piri-piri');
+var uuid = require('../modules/uuid');
 
-experiment('Test webrtc-chord functionality', function () {
+experiment('webrtc-chord:', function () {
   var simpleIDs = {};
   var serverSignaling;
+
+  var clientA;
+  var clientB;
+  var clientC;
+  var clientD;
+  var clientE;  
+
 
   before(function (done) {
     var options = {
@@ -30,12 +37,12 @@ experiment('Test webrtc-chord functionality', function () {
   });
 
   function startSignalingServer(cb) {
-    serverSignaling = spawn('node', ['./../../webrtc-chord-signaling-server/index.js']);
-    serverSignaling.stdout.on('data', function (data) { /* console.log('stdout: ' + data); */ });
-    serverSignaling.stderr.on('data', function (data) { /* console.log('stderr: ' + data); */ });
+    serverSignaling = spawn('node', ['./../webrtc-chord-signaling-server/index.js']);
+    serverSignaling.stdout.on('data', function (data) {  console.log('stdout: ' + data);  });
+    serverSignaling.stderr.on('data', function (data) {  console.log('stderr: ' + data);  });
     
     setTimeout(function () { 
-      console.log('Signaling server has started on:', serverSignaling.info.uri);
+      console.log('Signaling server has started');
       cb(); 
     }, 1000);    
   }
@@ -44,7 +51,7 @@ experiment('Test webrtc-chord functionality', function () {
     setTimeout(function () { 
       serverSignaling.on('close', function (code) { /* console.log('cp exited: ' + code); */ });  
       serverSignaling.kill();
-      pp.browserFarm.stop(function() {});
+      pp.farm.stop(function() {});
       pp.close(function () {});
       done();
     }, 1000);
@@ -52,73 +59,83 @@ experiment('Test webrtc-chord functionality', function () {
 
 
   test('spawn 3 browsers', { timeout: 60 * 1000 }, function (done) {
-    var url = pp.serverStats().uri;
-    pp.browserFarm.spawn(url, 'canary', function() {});
-    pp.browserFarm.spawn(url, 'canary', function() {});
-    pp.browserFarm.spawn(url, 'canary', function() {});
+    pp.farm.spawn(pp.uri(), 'chrome');
+    pp.farm.spawn(pp.uri(), 'chrome');
+    pp.farm.spawn(pp.uri(), 'chrome');
+    pp.farm.spawn(pp.uri(), 'chrome');
+    pp.farm.spawn(pp.uri(), 'chrome');
 
-    pp.waitForClients(3, function() {
-      var clientIDs = pp.clientManager.getClientIDs();
+    pp.waitForClients(5, function() {
+      var clientIDs = pp.manager.getClientIDs();
       simpleIDs.A = clientIDs[0];
       simpleIDs.B = clientIDs[1];
-      simpleIDs.C = clientIDs[2];        
+      simpleIDs.C = clientIDs[2];   
+      simpleIDs.D = clientIDs[3];      
+      simpleIDs.E = clientIDs[4];      
+         
+
       done();      
     }); 
   });
 
-  test('first node connects to the network', function (done) {
-    var clientA = pp.clientManager.getClient(simpleIDs.A);
-    clientA.action('create-node', {});
-    setTimeout(function(){
-      // events 1 and 2 need to happen
-      // reset messages on clientA
-      done();
-    },1000);
 
-
-  });
-
-  test('second node connects to the network', function (done) {
-    var clientA = pp.clientManager.getClient(simpleIDs.A);
-    var clientB = pp.clientManager.getClient(simpleIDs.B);
-    clientB.action('create-node', {});
-    setTimeout(function(){
-      // events 1 and 4 need to happen on client B
-      // event 3 need to happen on client A
-      // reset messages on clientA and clientB
-      done();
-    },1000);
-  });
-
-  // test('third node connects to the network', function (done){
-
-  // });
-
-
-  // test('Execute one action in one', function (done) {
-  //   var clientA = pp.clientManager.getClient(simpleIDs.A);
-  //   clientA.action('sum', { a:5, b:3 });
-  //   done();
-  // });
-
-  // test('Execute one action in one and check the message', function (done) {
-  //   var clientA = pp.clientManager.getClient(simpleIDs.A);
-  //   clientA.action('sum-return', {a:2, b:2});
+  test('connect 5 nodes to the signaling server to start the hashring',{timeout: 60*60*1000} ,  function (done) {
+    clientA = pp.manager.getClient(simpleIDs.A);
+    clientB = pp.manager.getClient(simpleIDs.B);
+    clientC = pp.manager.getClient(simpleIDs.C);
+    clientD = pp.manager.getClient(simpleIDs.D);
+    clientE = pp.manager.getClient(simpleIDs.E);    
     
-  //   setTimeout(function() {
-  //     expect(clientA.getMessages().length).to.equal(1);
-  //     expect(clientA.getMessages()[0].data.total).to.equal(4);
-  //     done();  
-  //   }, 800);
-  // });
+    setTimeout(function () { clientA.command('create-node', {}); }, 500);
+    setTimeout(function () { clientB.command('create-node', {}); }, 1000);
+    setTimeout(function () { clientC.command('create-node', {}); }, 1500);
+    setTimeout(function () { clientD.command('create-node', {}); }, 2000);
+    setTimeout(function () { clientE.command('create-node', {}); }, 2500);
+
+    setTimeout(function () {
+      // TEST EFFECTIVELY WITH PROBES
+      done();
+      // setTimeout(done, 5*60*1000); 
+    },4000);
+  });
+
+  test('Send a Message from client A to a random ID, check who receives it',{timeout: 60*60*1000}, function(done) {
+    clientA.waitToReceive(1, function () {
+      console.log('A:', clientA.getQ());
+      done();
+    });
+
+    clientB.waitToReceive(1, function () {
+      console.log('B:', clientB.getQ());
+      done();
+    });
+
+    clientC.waitToReceive(1, function () {
+      console.log('C:', clientC.getQ());
+      done();
+    });    
+
+    clientD.waitToReceive(1, function () {
+      console.log('D:', clientD.getQ());
+      done();
+    });
+
+    clientE.waitToReceive(1, function () {
+      console.log('E:', clientE.getQ());
+      done();
+    });
+
+    clientA.command('send-message', {
+      destId: uuid.gen(),
+      data: 'CLIENT A SAYS HI'
+    });
+  });
 
 
-  // MOAR TESTS
-  // Connect more browsers to a total of 5
+  // TODO: MOAR TESTS
   // Execute actions in all of them
   // Verify that all messages where received
   // Verify the pseudo external consistency
-
   // test('Verify pseudo external consistency', function (done) {
   //   done();
   // });

@@ -1,11 +1,10 @@
 {
   "name": "webrtc-chord",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Chord DHT Algorithm implementation for the browser using WebRTC and WebSockets ",
   "main": "index.js",
   "scripts": {
-    "test":" exit 0",
-    "test-real": "node ./node_modules/.bin/lab -r tap tests/*-test.js | ./node_modules/.bin/tap-spec"
+    "test": "node ./node_modules/.bin/lab -r tap tests/*-test.js | ./node_modules/.bin/tap-spec"
   },
   "keywords": [
     "webrtc",
@@ -20,7 +19,7 @@
   "author": "David Dias <daviddias.p@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "big-integer": "^1.3.16",
+    "big-integer": "^1.3.18",
     "bows": "^1.3.0",
     "eventemitter2": "^0.4.14",
     "git-sha1": "^0.1.2",

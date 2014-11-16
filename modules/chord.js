@@ -5,6 +5,7 @@ var bows = require('bows');
 var fingerTable = require('./fingerTable').createFingerTable();
 var uuid = require('./uuid.js');
 var canela = require('canela');
+var bigInt = require('big-integer');
 
 log = bows('webrtc-chord');
 // t; 
@@ -14,7 +15,6 @@ exports = module.exports;
 //
 // config: {
 //   signalingURL: <IP or Host of webrtc-chord-signaling-server>
-//   namespace: defaults to /,
 //   logging: defaults to true,
 //   tracing: defaults to false // emit events for connect events and finger table changes
 // }
@@ -86,9 +86,7 @@ function node(config) {
   ///
 
   function acceptPredecessor(predecessorInvite) {
-    // if this happens, means we are in warm up mode, so our initial predecessor
-    // won't work
-
+    // if this happens, means we are in warm up mode, so our initial predecessor won't work, because it was an initiatior
     predecessor = new simplePeer({ trickle: false });
 
     predecessor.on('message', router);
@@ -108,6 +106,7 @@ function node(config) {
 
   function acceptSucessor(sucessorInvite) {
     sucessor.signal(sucessorInvite.signalData);
+    emitter.emit('ready', {});
   }
 
   ///
@@ -117,6 +116,7 @@ function node(config) {
   function joinResponse(inviteReply) {
     predecessor.signal(inviteReply.signalData.predecessor);
     sucessor.signal(inviteReply.signalData.sucessor);
+    emitter.emit('ready', {});
   }
 
 
@@ -161,13 +161,21 @@ function node(config) {
     nS.signal(invite.signalData.predecessor);
   }
 
-
+  ///
   /// Message interpreter/broker for the whole chord
   /// note: ACTION AWARE instead of CONTEXT AWARE
+  ///
 
   function router (message) {
-    log('MESSAGE RECEIVED: ',  message);
-    sucessor.send('HERE GOES');
+    // log('MESSAGE RECEIVED: ',  message);
+    // sucessor.send('HERE GOES');
+
+    if(bigInt(message.destId, 16).compare(bigInt(id, 16)) === 1){
+      sucessor.send(message);
+    } else {
+      emitter.emit('message-receive', message);      
+    }
+
 
     // here I have access to all of the things and can make decisions on top of that knowledge
     // {

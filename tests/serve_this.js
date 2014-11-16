@@ -10,29 +10,35 @@ window.app = {
       
       var nodeConfig = {
         signalingURL: 'http://localhost:9000',
-        tracing: true
+        tracing: true,
+        logging: true
       };
 
       var node;    
 
-      ppClient.registerAction('create-node', function (data) {
-        
+      ppClient.register('create-node', function (data) {
+        console.log('ACTION :  create-node');
+
         node = chord.createNode(nodeConfig);      
       
-        node.on('trace', function(trace){
-          ppClient.sendMessage(trace);
+        node.on('trace', function(trace) {
+          console.log('TRACE');
+          ppClient.tell({trace: trace});
         });
 
         
-        node.on('message-receive', function (message){
+        node.on('message-receive', function (message) {
+          console.log('message-receive', message);
+          ppClient.tell({'message': message});
         });
 
       });
 
-      // 
-      // ppClient.registerAction('send-message', function (message) {
-      //   node.emit('message-send', message);
-      // });
+      
+      ppClient.register('send-message', function (message) {
+        console.log('ACTION :  send-messages');
+        node.emit('message-send', message);
+      });
       
 
     });

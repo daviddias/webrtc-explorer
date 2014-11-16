@@ -48,6 +48,10 @@ example:
       4   |   [4,0)     |    0
   ```
 
+#########
+######### FROM HERE BELOW NEEDS TO BE UPDATED!
+#########
+
 ### node joins
 
 to simplify, each node maintains a predecessor for gracious leaves (they say, I still don't think this is beneficial for the webrtc-chord case, simply because there are open connections)
