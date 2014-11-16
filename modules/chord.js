@@ -3,7 +3,7 @@ var simplePeer = require('simple-peer');
 var io = require('socket.io-client');
 var bows = require('bows'); 
 var fingerTable = require('./fingerTable').createFingerTable();
-var uuid = require('./uuid.js');
+var uuid = require('webrtc-chord-uuid');
 var canela = require('canela');
 var bigInt = require('big-integer');
 
@@ -194,12 +194,6 @@ function node(config) {
     // 
     // user - emit it to the user
   }
-
-  /// webrtc-chord user interface only
-
-  // emmiter.emit('message-receive', {}); 
-  // emitter.on('message-send', function (data) {
-  // });
 
   emitter.on('message-send', function (message) {
     log('SENDING MESSAGE');

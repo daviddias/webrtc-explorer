@@ -109,6 +109,14 @@ It enables you to communicate between several browsers in a p2p/decentralized fa
   example:
   - id: 2    description: sent    
   example:
+  - id: 3    description: forward    
+  example:
 
 
+# TODO: 
 
+- [ ] Support node leaves (for example, when a browser closes a tab); 
+- [ ] If the socket.io server goes down and we are already connected, don't do the bootstrap process all over again due to .on('connect') event
+- [ ] Make the state of the ring on webrtc-chord-signalling-server persistent
+- [ ] Improve vastly the quality of log messages
+- [ ] Implement the process for a Node to fill his finger table
