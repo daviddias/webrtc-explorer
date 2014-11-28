@@ -16,6 +16,10 @@
     "distributed",
     "hashring"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diasdavid/webrtc-chord"
+  },
   "author": "David Dias <daviddias.p@gmail.com>",
   "license": "MIT",
   "dependencies": {
