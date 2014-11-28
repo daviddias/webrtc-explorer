@@ -125,7 +125,7 @@ experiment('webrtc-chord:', function () {
       done();
     });
 
-    clientA.command('send-message', {
+    clientA.command('message-send', {
       destId: uuid.gen(),
       data: 'CLIENT A SAYS HI'
     });

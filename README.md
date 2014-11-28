@@ -5,7 +5,6 @@ webrtc-chord
 
 > DISCLAIMER, THIS IS UNDER ACTIVE DEVELOPMENT, in another words, lot of the docs, tests, features might be a lot of times out of sync, but I'll try to keep consistency and push always a 'working version', this is currently only developed by one person with a tight schedule.
 
-
 It enables you to communicate between several browsers in a p2p/decentralized fashion.
 
 # How to create a node

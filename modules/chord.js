@@ -64,10 +64,10 @@ function node(config) {
 
     sucessor.on('close', function (data) { log(data); });
     sucessor.on('error', function (data) { log(data); });
-    sucessor.on('ready', function () { log('sucessor channel ready to start the party'); });
+    // sucessor.on('ready', function () { });
     predecessor.on('close', function (data) { log(data); });
     predecessor.on('error', function (data) { log(data); });
-    predecessor.on('ready', function () { log('predecessor channel ready to start the party'); });
+    // predecessor.on('ready', function () { });
  
     function set() {
       if (Object.keys(signalData).length < 2) {
@@ -92,7 +92,7 @@ function node(config) {
     predecessor.on('message', router);
     predecessor.on('close', function (data) { log(data); });
     predecessor.on('error', function (data) { log(data); });
-    predecessor.on('ready', function () { log('predecessor channel ready to start the party'); });
+    // predecessor.on('ready', function () { });
 
     predecessor.on('signal', function(data){
       ioClient.emit('s-join-next', {
@@ -106,6 +106,7 @@ function node(config) {
 
   function acceptSucessor(sucessorInvite) {
     sucessor.signal(sucessorInvite.signalData);
+    log('node ready - predecessor and sucessor channel ready');
     emitter.emit('ready', {});
   }
 
@@ -116,6 +117,7 @@ function node(config) {
   function joinResponse(inviteReply) {
     predecessor.signal(inviteReply.signalData.predecessor);
     sucessor.signal(inviteReply.signalData.sucessor);
+    log('node ready - predecessor and sucessor channel ready');
     emitter.emit('ready', {});
   }
 
@@ -128,7 +130,7 @@ function node(config) {
     nP.on('error', function (data) { log(data); });
     nP.on('ready', function () { 
       predecessor = nP;
-      log('new predecessor is ready to start the party'); 
+      log('new predecessor'); 
     });
 
     nP.on('signal', function(data){
@@ -148,7 +150,7 @@ function node(config) {
     nS.on('error', function (data) { log(data); });
     nS.on('ready', function () { 
       sucessor = nS;
-      log('new successor channel is ready'); 
+      log('new successor'); 
     });
 
     nS.on('signal', function(data){
@@ -167,36 +169,33 @@ function node(config) {
   ///
 
   function router (message) {
-    // log('MESSAGE RECEIVED: ',  message);
-    // sucessor.send('HERE GOES');
+    log('message arrived: ', message);
 
     if(bigInt(message.destId, 16).compare(bigInt(id, 16)) === 1){
+      log('forwardwing message: ', message);
       sucessor.send(message);
     } else {
+      log('message for me: ', message);
       emitter.emit('message-receive', message);      
     }
 
 
-    // here I have access to all of the things and can make decisions on top of that knowledge
     // {
-    //   type:
-    //   sourceID:
     //   destID:
     //   data: 
     // }
 
-
-    // first question, am I the destiny? If not forward
-    // (fingerTable doesn't the math and we click send)
-
-    // If yes:  what types of messages might be propagated and how to handle:
-    // invite/connect to node
-    // 
-    // user - emit it to the user
   }
+
 
   emitter.on('message-send', function (message) {
     log('SENDING MESSAGE');
+    sucessor.send(message);
+  });
+
+  emitter.on('message-send-sucessor', function (message) {
+    log('SENDING MESSAGE TO SUCESSOR');
+    message.destID = bigInt(id, 16).add(1).toString(16);
     sucessor.send(message);
   });
 

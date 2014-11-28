@@ -21,6 +21,10 @@ window.app = {
 
         node = chord.createNode(nodeConfig);      
       
+        node.on('ready', function(){
+          console.log('NODE IS READY');
+        });
+
         node.on('trace', function(trace) {
           console.log('TRACE');
           ppClient.tell({trace: trace});
@@ -35,11 +39,16 @@ window.app = {
       });
 
       
-      ppClient.register('send-message', function (message) {
-        console.log('ACTION :  send-messages');
+      ppClient.register('message-send', function (message) {
+        console.log('ACTION :  message-send');
         node.emit('message-send', message);
       });
       
+      ppClient.register('message-send-sucessor', function (message) {
+        console.log('ACTION :  message-send-sucessor');
+        node.emit('message-send-sucessor', message);
+      });
+
 
     });
   }
