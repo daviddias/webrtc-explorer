@@ -32,8 +32,7 @@ function node(config) {
   var predecessor;
   var sucessor;                       
   var emitter = new eventEmitter2({ wildcard: true, newListener: false, maxListeners: 80 });
-
-  /// Joining the Chord network through Signaling procedures
+  this.e = emitter;
 
   var url = (config.signalingURL || 'http://default.url') + (config.namespace || '/');
   var ioClient = io(url);
@@ -64,10 +63,9 @@ function node(config) {
 
     sucessor.on('close', function (data) { log(data); });
     sucessor.on('error', function (data) { log(data); });
-    // sucessor.on('ready', function () { });
+
     predecessor.on('close', function (data) { log(data); });
     predecessor.on('error', function (data) { log(data); });
-    // predecessor.on('ready', function () { });
  
     function set() {
       if (Object.keys(signalData).length < 2) {
@@ -169,35 +167,44 @@ function node(config) {
   ///
 
   function router (message) {
-    log('message arrived: ', message);
-
+    // {
+    //   destID:
+    //   data: 
+    // }
     if(bigInt(message.destId, 16).compare(bigInt(id, 16)) === 1){
       log('forwardwing message: ', message);
+      // TODO: SEND TO BEST FINGER
       sucessor.send(message);
     } else {
       log('message for me: ', message);
       emitter.emit('message-receive', message);      
     }
-
-
-    // {
-    //   destID:
-    //   data: 
-    // }
-
   }
 
-
-  emitter.on('message-send', function (message) {
+  this.send = function(message) {
     log('SENDING MESSAGE');
     sucessor.send(message);
-  });
+  };
 
-  emitter.on('message-send-sucessor', function (message) {
+  this.sendToSucessor = function(data) {
     log('SENDING MESSAGE TO SUCESSOR');
-    message.destID = bigInt(id, 16).add(1).toString(16);
+    var message = {
+      destID: bigInt(id, 16).add(1).toString(16),
+      data: data
+    };
     sucessor.send(message);
-  });
+  };
 
-  return emitter;
+  // emitter.on('message-send', function (message) {
+  //   log('SENDING MESSAGE');
+  //   sucessor.send(message);
+  // });
+
+  // emitter.on('message-send-sucessor', function (message) {
+  //   log('SENDING MESSAGE TO SUCESSOR');
+  //   message.destID = bigInt(id, 16).add(1).toString(16);
+  //   sucessor.send(message);
+  // });
+
+  return this;
 }

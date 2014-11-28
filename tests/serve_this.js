@@ -31,7 +31,7 @@ window.app = {
         });
 
         
-        node.on('message-receive', function (message) {
+        node.e.on('message-receive', function (message) {
           console.log('message-receive', message);
           ppClient.tell({'message': message});
         });
@@ -41,7 +41,7 @@ window.app = {
       
       ppClient.register('message-send', function (message) {
         console.log('ACTION :  message-send');
-        node.emit('message-send', message);
+        node.send(message);
       });
       
       ppClient.register('message-send-sucessor', function (message) {
