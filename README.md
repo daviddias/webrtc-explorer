@@ -19,7 +19,7 @@ It enables you to communicate between several browsers in a p2p/decentralized fa
   };
   var node = chord.createNode(nodeConfig);
 
-  node.on('ready', function (){
+  node.e.on('ready', function (){
     // this node is ready
   });
   ```
@@ -30,16 +30,23 @@ It enables you to communicate between several browsers in a p2p/decentralized fa
   Send a message to a Node responsible for the ID `1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29`
 
   ```
-  var nodeToSend = '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29'; // 160 bit ID represented in hex(git_sha1 module is a good way to generate these)
+  var nodeToSend = '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29'; 
+  // 160 bit ID represented in hex(`git_sha1` module is a good way to generate these)
 
-  node.emit('message-send', { destID: '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29', 
-                              data: 'hey, how are you doing' });
+  node.send(destID: '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29', 
+            data: 'hey, how are you doing');
+  ```
+
+  Send a message to this node sucessor (next node in Chord)
+
+  ```
+  node.sendSucessor(data: 'hey, how are you doing');
   ```
 
   Receive a message
   ```
-  node.on('message-receive', function(message) {
-    console.log(message.data);
+  node.e.on('message', function(message) {
+    console.log(message);
   });
   ```
 
