@@ -149,7 +149,7 @@ experiment('webrtc-chord:', function() {
     }
   });
 
-  test('verify the fingerTable', {timeout: 60*60*1000} ,  function(done) {
+  test('verify the fingerTable part 1', {timeout: 60*60*1000} ,  function(done) {
     cA.command('finger-table', {});
     cB.command('finger-table', {});
     cC.command('finger-table', {});
@@ -183,24 +183,58 @@ experiment('webrtc-chord:', function() {
 
   test('kill node A');
 
-  // test('connect a fourth node', {timeout: 60*60*1000} ,  function(done) {    
-  //   createNodeFromClient(cD, 100);
+  test('connect a fourth node', {timeout: 60*60*1000} ,  function(done) {    
+    createNodeFromClient(cD, 100);
 
-  //   waitForClient(cD, 'D');
+    waitForClient(cD, 'D');
 
-  //   function waitForClient(client, identifier) {
-  //     client.waitToReceive(1, function() {
-  //       var q = client.getQ();
-  //       expect(q[0].data.nodeId).to.be.string();
-  //       expect(q[0].data.message).to.be.string();
-  //       expect(q[0].data.message).to.equal('node is ready');
-  //       client.clearQ();
-  //       chordIds[identifier] = q[0].data.nodeId;
-  //       setTimeout(done, 1000);
-  //     });
-  //   }
-  // });
+    function waitForClient(client, identifier) {
+      client.waitToReceive(1, function() {
+        var q = client.getQ();
+        expect(q[0].data.nodeId).to.be.string();
+        expect(q[0].data.message).to.be.string();
+        expect(q[0].data.message).to.equal('node is ready');
+        client.clearQ();
+        chordIds[identifier] = q[0].data.nodeId;
+        setTimeout(done, 1000);
+      });
+    }
+  });
 
+  test('verify the fingerTable part II', {timeout: 60*60*1000} ,  function(done) {
+    cA.command('finger-table', {});
+    cB.command('finger-table', {});
+    cC.command('finger-table', {});
+    cD.command('finger-table', {});
+
+    var count = 0;
+    var fingers = {};
+
+    collect(cA, 'A');
+    collect(cB, 'B');
+    collect(cC, 'C');
+    collect(cD, 'D');
+
+    function collect(client, identifier) {
+      client.waitToReceive(1, function() {
+        var q = client.getQ();
+        fingers[identifier] = q[0].data;
+        client.clearQ();
+        count += 1;
+        if (count === 4) {
+          verify();
+        }
+      });      
+    }
+
+    function verify() {
+      expect(fingers.A.sucessor).to.not.equal(fingers.B.sucessor);
+      expect(fingers.B.sucessor).to.not.equal(fingers.C.sucessor);
+      expect(fingers.C.sucessor).to.not.equal(fingers.D.sucessor);   
+      expect(fingers.D.sucessor).to.not.equal(fingers.A.sucessor);           
+      done();
+    }
+  });
   
 
   // test('send message from B to D', {timeout: 60*60*1000}, function(done) {
