@@ -2,12 +2,12 @@ var chord = require('./../src/index.js');
 var pp = require('piri-piri.client');
 
 window.app = {
-  init: function () {
+  init: function() {
 
-    var ppOptions = { url: 'http://localhost:9876' };
+    var ppOptions = {url: 'http://localhost:9876'};
 
-    pp.start(ppOptions, function () {
-      
+    pp.start(ppOptions, function() {
+
       var nodeConfig = {
         signalingURL: 'http://localhost:9000',
         tracing: true,
@@ -16,10 +16,10 @@ window.app = {
 
       var node;
 
-      pp.register('create-node', function (data) {
+      pp.register('create-node', function(data) {
         console.log('ACTION: create-node');
-        node = chord.createNode(nodeConfig);      
-      
+        node = chord.createNode(nodeConfig);
+
         node.e.on('ready', function() {
           console.log('node - ' + node.id() + ' - is ready');
           pp.tell({
@@ -28,8 +28,7 @@ window.app = {
            });
         });
 
-        
-        node.e.on('message', function (message) {
+        node.e.on('message', function(message) {
           console.log('message-receive', message);
           pp.tell({
             nodeId: node.id(),
@@ -39,24 +38,21 @@ window.app = {
 
       });
 
-      pp.register('finger-table', function () {
+      pp.register('finger-table', function() {
         console.log('ACTION: finger-table - ', node.fingerTable());
         pp.tell(node.fingerTable());
       });
 
-      
-      pp.register('send', function (data) {
+      pp.register('send', function(data) {
         console.log('ACTION: send to - ', data.toId, data.message);
-        node.send(data.toId, data.message);      
+        node.send(data.toId, data.message);
       });
-      
-      pp.register('send-sucessor', function (data) {
+
+      pp.register('send-sucessor', function(data) {
         console.log('ACTION: send-sucessor');
 
         node.sendSucessor(data.message);
       });
-
-
     });
   }
 };

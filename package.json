@@ -11,7 +11,7 @@
     "test-cov-html": "node ./node_modules/.bin/lab -r html -o coverage.html tests/*-test.js"
   },
   "precommit": [
-
+    "codestyle",
     "lint",
     "test"
   ],

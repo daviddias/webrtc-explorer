@@ -36,7 +36,7 @@ function Node(config) {
   var url = (config.signalingURL || 'http://default.url') + (config.namespace || '/');
   var ioClient = io(url);
 
-  ioClient.once('connect', onConnect);  
+  ioClient.once('connect', onConnect);
 
   function onConnect() {
     log('Connected to Signaling Server');
@@ -64,7 +64,7 @@ function Node(config) {
 
   self.sendSucessor = function(data) {
     console.log('send to sucessor');
-    self.send((bigInt(id, 16).add(1)).toString(16), data); 
+    self.send((bigInt(id, 16).add(1)).toString(16), data);
   };
 
   self.id = function() {
@@ -97,7 +97,7 @@ function Node(config) {
       fTable.sucessor().peer.send(message);
     } else {
       log('message for me: ', message);
-      self.e.emit('message', message.data);      
+      self.e.emit('message', message.data);
     }
   }
 }
