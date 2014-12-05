@@ -1,5 +1,24 @@
-How does it work?
+How does webrtc-ring work underneath?
 =======================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 webrtc-chord as the name suggests, uses the Chord algorithm, which you a description on the [paper][1].
 

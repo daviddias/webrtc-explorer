@@ -2,11 +2,11 @@ var Peer = require('simple-peer');
 
 exports = module.exports;
 
-exports.create = function (id, io, router, fingerTable) {
-  return new Manager(id, io, router, fingerTable);
+exports.create = function (id, io, router, finger) {
+  return new Manager(id, io, router, finger);
 };
 
-function Manager(id, io, router, fingerTable) {
+function Manager(id, io, router, finger) {
   var self = this;
 
   /// establish a connection to another peer
@@ -43,7 +43,7 @@ function Manager(id, io, router, fingerTable) {
       peer.on('ready', function() {
         log('channel ready to send');
         peer.on('message', router);
-        fingerTable.add(offer.destId, peer, self);
+        finger.set(offer.destId, peer, self);
       });
     }
   };

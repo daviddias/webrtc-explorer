@@ -3,15 +3,14 @@ var bigInt = require('big-integer');
 exports = module.exports;
 
 exports.create = function(id, cb) {
-  return new FingerTable(id, cb);
+  return new Finger(id, cb);
 };
 
-function FingerTable (id, cb) {
+function Finger (id, cb) {
   var self = this;
   var sucessor;
-  var table = []; 
 
-  self.add = function (id, peer, cManager) {
+  self.set = function (id, peer, cManager) {
     var first = sucessor ? false : true;
     
     sucessor = {
@@ -24,24 +23,13 @@ function FingerTable (id, cb) {
       cManager.connect((bigInt(id, 16).add(1)).toString(16));
     });
 
-    if(first) { 
+    if(first) {
       return cb(); 
     }
   };
 
-  self.get = function (id) {
-    // returns best peer for that id
-  };
-
   self.sucessor = function () {
     return sucessor;
-  };
-
-  self.table = function () {
-    return {
-      sucessor: sucessor.id
-      // fingers..
-    };
   };
 
   return this;

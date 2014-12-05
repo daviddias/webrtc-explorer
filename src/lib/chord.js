@@ -2,19 +2,17 @@ var eventEmitter2 = require('eventemitter2').EventEmitter2;
 var io = require('socket.io-client');
 var bows = require('bows'); 
 var uuid = require('webrtc-chord-uuid');
-// var canela = require('canela');
 var bigInt = require('big-integer');
-var fingerTable = require('./fingerTable');
+var finger = require('./finger');
 var channelManager = require('./channelManager');
 
-log = bows('webrtc-chord');
+log = bows('webrtc-ring');
 
 exports = module.exports;
 
 // config: {
-//   signalingURL: <IP or Host of webrtc-chord-signaling-server>
+//   signalingURL: <IP or Host of webrtc-ring-signaling-server>
 //   logging: defaults to true,
-//   tracing: defaults to false // emit events for connect events and finger table changes
 // }
 exports.createNode = function (config) {
   return new Node(config);
@@ -24,7 +22,7 @@ function Node(config) {
   localStorage.debug = config.logging || false;
   var self = this;
   var id = uuid.gen(); // our node id
-  var fTable;
+  var fManager;
   var cManager; 
   
   self.e = new eventEmitter2({
@@ -42,8 +40,8 @@ function Node(config) {
     log('Connected to Signaling Server');
     ioClient.emit('s-id', id);
 
-    fTable = fingerTable.create(id, nodeReady);
-    cManager = channelManager.create(id, ioClient, router, fTable);
+    fManager = finger.create(id, nodeReady);
+    cManager = channelManager.create(id, ioClient, router, fManager);
     cManager.connect((bigInt(id, 16).add(1)).toString(16));
   }
 
@@ -59,7 +57,7 @@ function Node(config) {
       destId: destId,
       data: data
     };
-    fTable.sucessor().peer.send(message);
+    fManager.sucessor().peer.send(message);
   };
 
   self.sendSucessor = function(data) {
@@ -71,8 +69,8 @@ function Node(config) {
     return id;
   };
 
-  self.fingerTable = function() {
-    return fTable.table();
+  self.sucessor = function() {
+    return fManager.sucessor();
   };
 
   /// message router
@@ -86,15 +84,14 @@ function Node(config) {
 
     if(bigInt(message.destId, 16).greater(bigInt(id, 16))){
       // edge case when it loops around
-      if((bigInt(id, 16).minus(bigInt(fTable.sucessor().id, 16))).compare(0) === 1 ||
-        (bigInt(id, 16).minus(bigInt(fTable.sucessor().id, 16))).compare(0) === 0) {
-        log('EDGE CASE');
-        message.destId = fTable.sucessor().id;
+      if((bigInt(id, 16).minus(bigInt(fManager.sucessor().id, 16))).compare(0) === 1 ||
+        (bigInt(id, 16).minus(bigInt(fManager.sucessor().id, 16))).compare(0) === 0) {
+        log('loop the loop');
+        message.destId = fManager.sucessor().id;
       }
 
       log('forwardwing message: ', message);
-      // TODO: SEND TO BEST FINGER
-      fTable.sucessor().peer.send(message);
+      fManager.sucessor().peer.send(message);
     } else {
       log('message for me: ', message);
       self.e.emit('message', message.data);

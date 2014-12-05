@@ -12,11 +12,11 @@ var expect = Code.expect;
 var pp = require('piri-piri');
 var uuid = require('webrtc-chord-uuid');
 var bigInt = require('big-integer');
-var utils = require('../../webrtc-chord-signaling-server/src/lib/utils');
+var utils = require('../../webrtc-ring-signaling-server/src/lib/utils');
 
-experiment('webrtc-chord:', function() {
+experiment(':', function() {
   var ppIds = {};
-  var chordIds = {};
+  var ringIds = {};
   var signaling;
 
   var cA;
@@ -41,7 +41,7 @@ experiment('webrtc-chord:', function() {
 
   function startSignalingServer(cb) {
     signaling = spawn('node',
-                      ['./../webrtc-chord-signaling-server/src/index.js']);
+                      ['./../webrtc-ring-signaling-server/src/index.js']);
     signaling.stdout.on('data', function(data) {
       console.log('stdout: \n' + data);
     });
@@ -105,7 +105,7 @@ experiment('webrtc-chord:', function() {
         expect(q[0].data.message).to.be.string();
         expect(q[0].data.message).to.equal('node is ready');
         client.clearQ();
-        chordIds[identifier] = q[0].data.nodeId;
+        ringIds[identifier] = q[0].data.nodeId;
         count += 1;
 
         if (count === 2) {
@@ -117,7 +117,7 @@ experiment('webrtc-chord:', function() {
 
   test('send message from A to B', function(done) {
     cA.command('send', {
-      toId: chordIds.B,
+      toId: ringIds.B,
       message: 'hey, how is it going B'
     });
 
@@ -142,17 +142,17 @@ experiment('webrtc-chord:', function() {
         expect(q[0].data.message).to.be.string();
         expect(q[0].data.message).to.equal('node is ready');
         client.clearQ();
-        chordIds[identifier] = q[0].data.nodeId;
+        ringIds[identifier] = q[0].data.nodeId;
         setTimeout(done, 2000);
       });
     }
   });
 
-  test('verify the fingerTable part 1', {timeout: 60 * 60 * 1000},
+  test('verify the sucessors part 1', {timeout: 60 * 60 * 1000},
        function(done) {
-    cA.command('finger-table', {});
-    cB.command('finger-table', {});
-    cC.command('finger-table', {});
+    cA.command('sucessor', {});
+    cB.command('sucessor', {});
+    cC.command('sucessor', {});
 
     var count = 0;
     var fingers = {};
@@ -195,18 +195,18 @@ experiment('webrtc-chord:', function() {
         expect(q[0].data.message).to.be.string();
         expect(q[0].data.message).to.equal('node is ready');
         client.clearQ();
-        chordIds[identifier] = q[0].data.nodeId;
+        ringIds[identifier] = q[0].data.nodeId;
         setTimeout(done, 1000);
       });
     }
   });
 
-  test('verify the fingerTable part II', {timeout: 60 * 60 * 1000},
+  test('verify the sucessor part II', {timeout: 60 * 60 * 1000},
        function(done) {
-    cA.command('finger-table', {});
-    cB.command('finger-table', {});
-    cC.command('finger-table', {});
-    cD.command('finger-table', {});
+    cA.command('sucessor', {});
+    cB.command('sucessor', {});
+    cC.command('sucessor', {});
+    cD.command('sucessor', {});
 
     var count = 0;
     var fingers = {};
@@ -238,9 +238,9 @@ experiment('webrtc-chord:', function() {
   });
 
   test('send message from B to D', {timeout: 60 * 60 * 1000}, function(done) {
-    // console.log(chordIds);
+    // console.log(ringIds);
     cB.command('send', {
-      toId: chordIds.D,
+      toId: ringIds.D,
       message: 'hey, how is it going D'
     });
 

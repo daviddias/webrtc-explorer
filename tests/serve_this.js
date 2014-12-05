@@ -1,5 +1,6 @@
 var chord = require('./../src/index.js');
 var pp = require('piri-piri.client');
+var bigInt = require('big-integer');
 
 window.app = {
   init: function() {
@@ -21,7 +22,8 @@ window.app = {
         node = chord.createNode(nodeConfig);
 
         node.e.on('ready', function() {
-          console.log('node - ' + node.id() + ' - is ready');
+          console.log('node - ' + node.id() + ' - is ready - ',
+                      bigInt(node.id(), 16).toString());
           pp.tell({
             nodeId: node.id(),
             message: 'node is ready'
@@ -38,13 +40,17 @@ window.app = {
 
       });
 
-      pp.register('finger-table', function() {
-        console.log('ACTION: finger-table - ', node.fingerTable());
-        pp.tell(node.fingerTable());
+      pp.register('sucessor', function() {
+        console.log('ACTION: sucessor - ',
+                    node.sucessor().id,
+                    bigInt(node.sucessor().id, 16).toString());
+        pp.tell({sucessor: node.sucessor().id});
       });
 
       pp.register('send', function(data) {
-        console.log('ACTION: send to - ', data.toId, data.message);
+        console.log('ACTION: send to - ',
+                    data.toId, bigInt(data.toId, 16).toString(),
+                    data.message);
         node.send(data.toId, data.message);
       });
 
