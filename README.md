@@ -7,6 +7,13 @@ webrtc-ring
 
 It enables you to communicate between several browsers in a p2p/decentralized fashion though a DHT.
 
+# Badgers
+[![NPM](https://nodei.co/npm/webrtc-ring.png?downloads=true&stars=true)](https://nodei.co/npm/webrtc-ring/)
+
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/diasdavid/webrtc-ring?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
+[![Dependency Status](https://david-dm.org/diasdavid/webrtc-ring.svg)](https://david-dm.org/diasdavid/webrtc-ring)
+
+
 # How to create a node
 
   webrtc-ring uses [browserify](http://browserify.org/)
