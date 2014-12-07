@@ -1,6 +1,6 @@
 {
   "name": "webrtc-ring",
-  "version": "1.0.0",
+  "version": "0.5.0",
   "description": "Chord inspired ring DHT algorithm using WebRTC as transport layer for P2P in the browser",
   "main": "src/index.js",
   "scripts": {
