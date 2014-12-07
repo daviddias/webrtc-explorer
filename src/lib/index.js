@@ -12,7 +12,7 @@ exports = module.exports;
 
 // config: {
 //   signalingURL: <IP or Host of webrtc-ring-signaling-server>
-//   logging: defaults to true,
+//   logging: defaults to false,
 // }
 exports.createNode = function (config) {
   return new Node(config);
@@ -57,6 +57,12 @@ function Node(config) {
       destId: destId,
       data: data
     };
+
+    if (bigInt(destId, 16).lesser(bigInt(id, 16))) {
+      message.destId = 'fffffffffffffffffffffffffffffffffffffffff';
+      message.realDestId = destId;
+    }
+
     fManager.sucessor().peer.send(message);
   };
 
@@ -75,19 +81,25 @@ function Node(config) {
 
   /// message router
 
+// e3de01bb17fdfbb055b2f49abbdc19c40f574a51
+// fffffffffffffffffffffffffffffffffffffffff
+
   function router(message) {
-    // {
-    //   destID:
-    //   data: 
-    // }
+    // { destID: , data: }    
     log('message arrived', message);
 
-    if(bigInt(message.destId, 16).greater(bigInt(id, 16))){
-      // edge case when it loops around
-      if((bigInt(id, 16).minus(bigInt(fManager.sucessor().id, 16))).compare(0) === 1 ||
-        (bigInt(id, 16).minus(bigInt(fManager.sucessor().id, 16))).compare(0) === 0) {
-        log('loop the loop');
-        message.destId = fManager.sucessor().id;
+
+    if(bigInt(message.destId, 16).greater(bigInt(id, 16))) {
+      // If the difference between me and my sucessor is positive, means we 
+      // are looping the ring
+      if((bigInt(id, 16).minus(bigInt(fManager.sucessor().id, 16))).compare(0) === 1) {
+        if (message.destId === 'fffffffffffffffffffffffffffffffffffffffff') {
+          log('loop the loop with edge case');
+          message.destId = message.realDestId;
+        } else {
+          log('loop the loop');
+          message.destId = fManager.sucessor().id;          
+        }
       }
 
       log('forwardwing message: ', message);

@@ -13,7 +13,6 @@ It enables you to communicate between several browsers in a p2p/decentralized fa
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/diasdavid/webrtc-ring?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
 [![Dependency Status](https://david-dm.org/diasdavid/webrtc-ring.svg)](https://david-dm.org/diasdavid/webrtc-ring)
 
-
 # How to create a node
 
   webrtc-ring uses [browserify](http://browserify.org/)
@@ -36,10 +35,10 @@ It enables you to communicate between several browsers in a p2p/decentralized fa
   Send a message to a Node responsible for the ID `1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29`
 
   ```
-  var nodeToSend = '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29'; 
+  var toId = '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29'; 
   // 160 bit ID represented in hex(`git_sha1` module is a good way to generate these)
 
-  node.send(destID: '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29', 
+  node.send(destID: toId, 
             data: 'hey, how are you doing');
   ```
 
@@ -57,10 +56,6 @@ It enables you to communicate between several browsers in a p2p/decentralized fa
   ```
 
 # Other options
-
-## finger table updates
-  - use tracing for this
-
 
 ## logging
 

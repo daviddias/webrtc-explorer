@@ -19,7 +19,7 @@ function Manager(id, io, router, finger) {
     var peer = new Peer({initiator: true, trickle: false});
     
     peer.on('signal', function (signal) {
-      log('sendOffer');
+      // log('sendOffer');
       io.emit('s-send-offer', {
         intentId: intentId,
         srcId: id,
@@ -31,7 +31,7 @@ function Manager(id, io, router, finger) {
     var listener = io.on('c-offer-accepted', offerAccepted);
 
     function offerAccepted(offer) {
-      log('offerAccepted');
+      // log('offerAccepted');
       if(offer.intentId !== intentId) { 
         log('not right intentId ', offer.intentId, intentId);
         return; 
@@ -51,7 +51,7 @@ function Manager(id, io, router, finger) {
   /// accept offers from peers that want to connect
 
   io.on('c-accept-offer', function(offer) {
-    log('acceptOffer');    
+    // log('acceptOffer');    
     var peer = new Peer({trickle: false});
     
     peer.on('ready', function() { 
@@ -59,7 +59,7 @@ function Manager(id, io, router, finger) {
       peer.on('message', router);
     });
     peer.on('signal', function (signal){
-      log('sending back my signal data');
+      // log('sending back my signal data');
       offer.destId = id; // so the other peer knows what's my id
       offer.signal = signal;
       io.emit('s-offer-accepted', offer);

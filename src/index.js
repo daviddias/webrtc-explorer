@@ -1,1 +1,1 @@
-module.exports = require('./lib/chord.js');
+module.exports = require('./lib/index.js');

@@ -229,16 +229,32 @@ experiment(':', function() {
     }
 
     function verify() {
+      expect(fingers.A.sucessor).to.not.equal(ringIds.A);
+      expect(fingers.B.sucessor).to.not.equal(ringIds.B);
+      expect(fingers.C.sucessor).to.not.equal(ringIds.C);
+      expect(fingers.D.sucessor).to.not.equal(ringIds.D);
+
       expect(fingers.A.sucessor).to.not.equal(fingers.B.sucessor);
       expect(fingers.B.sucessor).to.not.equal(fingers.C.sucessor);
       expect(fingers.C.sucessor).to.not.equal(fingers.D.sucessor);
       expect(fingers.D.sucessor).to.not.equal(fingers.A.sucessor);
+
+      // console.log(ringIds);
+      // console.log(fingers);
+
+      // console.log(
+      //   Object
+      //     .keys(ringIds)
+      //     .map(function(key) {
+      //       return key + ' - (dec) - ' + bigInt(ringIds[key], 16).toString();
+      //     })
+      //   );
+
       done();
     }
   });
 
   test('send message from B to D', {timeout: 60 * 60 * 1000}, function(done) {
-    // console.log(ringIds);
     cB.command('send', {
       toId: ringIds.D,
       message: 'hey, how is it going D'
