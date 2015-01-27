@@ -14,6 +14,7 @@ webrtc-explorer
 - Ids have 48 bits (so that is a multiple of 4 (for hex notation) and doesn't require importing a big-num lib to handle over 53 bits operations)
 - The number of fingers of each peer is flexible, however it is recommended to not pass 16 per node (due to browser resource constraints)
 - Each peer is responsible for a segment of the hash ring
+- The signaling server for webrtc-explorer can be found at: https://github.com/diasdavid/webrtc-explorer-signalling-server
 
 # Usage
 
