@@ -68,12 +68,12 @@ peer.events.on('message', function(envelope){
 
   add the logging flag to your config
 
-  ```
-  var config = {
+```
+var config = {
     //...
     logging: true
-  };
-  ```
+};
+```
 
 # How does it work
 
