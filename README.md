@@ -1,68 +1,74 @@
-webrtc-ring
+webrtc-explorer
 =======================================
 
-**tl;dr** ring inspired ring DHT algorithm using WebRTC as transport layer for P2P in the browser. You can find more about how it works underneath at [HOW_DOES_IT_WORK](/HOW_DOES_IT_WORD.md)
-
-It enables you to communicate between several browsers in a p2p/decentralized fashion though a DHT.
+**tl;dr** `webrtc-explorer` is a [Chord][chord-paper] inspired P2P overlay network designed for the Web platform (browsers), using WebRTC as its transport between peers and WebSockets for Signaling data. Essentially, it enables your peers (browsers) to communicate between each other without the need to have a server as a mediator of messages.
 
 # Badgers
-[![NPM](https://nodei.co/npm/webrtc-ring.png?downloads=true&stars=true)](https://nodei.co/npm/webrtc-ring/)
+[![NPM](https://nodei.co/npm/webrtc-explorer.png?downloads=true&stars=true)](https://nodei.co/npm/webrtc-explorer/)
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/diasdavid/webrtc-ring?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
-[![Dependency Status](https://david-dm.org/diasdavid/webrtc-ring.svg)](https://david-dm.org/diasdavid/webrtc-ring)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/diasdavid/webrtc-explorer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
+[![Dependency Status](https://david-dm.org/diasdavid/webrtc-explorer.svg)](https://david-dm.org/diasdavid/webrtc-explorer)
 
-# How to create a node
+# Properties
 
-  webrtc-ring uses [browserify](http://browserify.org/)
+- Ids have 48 bits (so that is a multiple of 4 (for hex notation) and doesn't require importing a big-num lib to handle over 53 bits operations)
+- The number of fingers of each peer is flexible, however it is recommended to not pass 16 per node (due to browser resource constraints)
+- Each peer is responsible for a segment of the hash ring
 
-  ```
-  var ring = require('webrtc-ring');
+# Usage
 
-  var nodeConfig = {
+`webrtc-explorer` uses [browserify](http://browserify.org)
+
+## Create a new peer
+
+```
+var Explorer = require('webrtc-explorer');
+
+var config = {
     signalingURL: 'http://url-to-webrtc-ring-signaling-server.com'
-  };
-  var node = ring.createNode(nodeConfig);
+};
+var peer = new Explorer(config);
 
-  node.e.on('ready', function () {
+peer.events.on('ready', function () {
     // this node is ready
-  });
-  ```
+});
+```
 
-# How to communicate with other nodes
+## Register the peer
 
-  Send a message to a Node responsible for the ID `1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29`
+```
+```
 
-  ```
-  var toId = '1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29'; 
-  // 160 bit ID represented in hex(`git_sha1` module is a good way to generate these)
+## Send and receive a message
 
-  node.send(destID: toId, 
-            data: 'hey, how are you doing');
-  ```
+```
+```
 
-  Send a message to this node sucessor (next node in ring)
+## Other options
 
-  ```
-  node.sendSucessor(data: 'hey, how are you doing');
-  ```
+### logging
 
-  Receive a message
-  ```
-  node.e.on('message', function(message) {
-    console.log(message);
-  });
-  ```
-
-# Other options
-
-## logging
-
-  add the logging flag to your nodeConfig
+  add the logging flag to your config
 
   ```
-  var nodeConfig = {
+  var config = {
     //...
     logging: true
     //...
   };
   ```
+
+# How does it work
+
+Read the CHORD paper
+Some important learnings that are part of webrtc-explorer, were done in webrtc-ring
+http://blog.daviddias.me/2014/12/20/webrtc-ring
+
+## Registering a peer
+
+## Updating the finger table
+
+## Signaling between two peers
+
+## Message routing
+  
