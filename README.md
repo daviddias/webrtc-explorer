@@ -19,7 +19,7 @@ webrtc-explorer
 
 `webrtc-explorer` uses [browserify](http://browserify.org)
 
-## Create a new peer
+### Create a new peer
 
 ```
 var Explorer = require('webrtc-explorer');
@@ -34,19 +34,37 @@ peer.events.on('ready', function () {
 });
 ```
 
-## Register the peer
+### Register the peer
 
 ```
+peer.events.on('registered', function(data){
+    // peer registered with data.peerId
+});
+
+peer.register();
 ```
 
-## Send and receive a message
+### Send and receive a message
+
+peerIds are 48 bits represented in a string using hex format. To send, in one peer:
 
 ```
+var data = 'hey peer, how is it going';
+
+peer.send('abcd0f0fdbca', data);
 ```
 
-## Other options
+To receive, in another peer (responsible for that Id)
 
-### logging
+```
+peer.events.on('message', function(envelope){
+    // message from the other peer envelope.data
+});
+```
+
+### Other options
+
+#### logging
 
   add the logging flag to your config
 
@@ -54,15 +72,14 @@ peer.events.on('ready', function () {
   var config = {
     //...
     logging: true
-    //...
   };
   ```
 
 # How does it work
 
-Read the CHORD paper
-Some important learnings that are part of webrtc-explorer, were done in webrtc-ring
-http://blog.daviddias.me/2014/12/20/webrtc-ring
+To understand fully webrtc-explorer's core, it is crucial to be familiar with the [Chord][chord-paper]. webrtc-explorer levarages important battle experience from building webrtc-ring - http://blog.daviddias.me/2014/12/20/webrtc-ring
+
+* I'll upload my notes and images `soon`, I'm trying to make them as legible as possible. If you have a urgency in one of the parts, please let me know, so that I put that one as a priority.
 
 ## Registering a peer
 
@@ -71,4 +88,10 @@ http://blog.daviddias.me/2014/12/20/webrtc-ring
 ## Signaling between two peers
 
 ## Message routing
-  
+
+
+
+
+
+
+[chord-paper]: http://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf
