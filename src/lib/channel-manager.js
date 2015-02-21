@@ -30,8 +30,8 @@ function ChannelManager(peerId, ioc, router) {
 
         function offerAccepted(data) {
             if(data.offer.intentId !== intentId) { 
-                log('OK: not right intentId: ', 
-                        data.offer.intentId, intentId);
+//                log('OK: not right intentId: ',
+//                        data.offer.intentId, intentId);
                 return; 
             }
             log('offerAccepted');

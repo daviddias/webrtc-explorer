@@ -27,7 +27,7 @@ function FingerTable (peerId, events, channelManager) {
         }
 
         channelManager.connect(data.fingerId, function(err, channel) {
-            log('added a channel to %s on finger table row %s',
+            log('finger table row update: ',
                 data.rowIndex, data.fingerId);
             if(!table[data.rowIndex]) {
                 table[data.rowIndex] = {};

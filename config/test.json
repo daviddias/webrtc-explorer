@@ -1,0 +1,23 @@
+{
+    "hapi": {
+        "port": 9000,
+        "options": {
+            "connections": {
+                "routes": {
+                    "cors": true
+                }
+            }
+        }
+    },
+    "explorer": {
+        "fingers": [
+            0, 
+            10,
+            20,
+            30,
+            47
+        ],
+        "min-peers": 4
+    }
+}
+

@@ -5,7 +5,7 @@ var Id = require('dht-id');
 var FingerTable = require('./finger-table.js');
 var ChannelManager = require('./channel-manager.js');
 
-log = bows('webrtc-ring');
+log = bows('webrtc-explorer');
 
 exports = module.exports = Peer;
 

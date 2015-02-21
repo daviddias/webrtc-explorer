@@ -9,6 +9,8 @@ var config = {
 
 var peer = new Explorer(config);
 
+peerGlobal = peer;
+
 peer.events.on('registered', function(data) {
     console.log('registered with Id:', data.peerId);
 });
