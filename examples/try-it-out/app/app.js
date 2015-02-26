@@ -25,8 +25,3 @@ peer.events.on('message', function(envelope) {
 
 peer.register();
 
-var testIds = [
-    'ffffffffffff',
-    '000000000000',
-    'ffffff000000'
-];
