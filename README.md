@@ -24,7 +24,7 @@ webrtc-explorer
 
 ### Create a new peer
 
-```
+```javascript
 var Explorer = require('webrtc-explorer');
 
 var config = {
@@ -39,7 +39,7 @@ peer.events.on('ready', function () {
 
 ### Register the peer
 
-```
+```javascript
 peer.events.on('registered', function(data){
     // peer registered with data.peerId
 });
@@ -51,7 +51,7 @@ peer.register();
 
 peerIds are 48 bits represented in a string using hex format. To send, in one peer:
 
-```
+```javascript
 var data = 'hey peer, how is it going';
 
 peer.send('abcd0f0fdbca', data);
@@ -59,7 +59,7 @@ peer.send('abcd0f0fdbca', data);
 
 To receive, in another peer (responsible for that Id)
 
-```
+```javascript
 peer.events.on('message', function(envelope){
     // message from the other peer envelope.data
 });
@@ -71,7 +71,7 @@ peer.events.on('message', function(envelope){
 
   add the logging flag to your config
 
-```
+```javascript
 var config = {
     //...
     logging: true
