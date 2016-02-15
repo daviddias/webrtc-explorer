@@ -136,7 +136,13 @@ function remove () {
 
 // forward an WebRTC offer to another peer
 function forward (offer) {
-
+  if (offer.answer) {
+    peerTable[offer.srcId].socket
+      .emit('we-handshake', offer)
+    return
+  }
+  peerTable[offer.dstId].socket
+    .emit('we-handshake', offer)
 }
 
 /*

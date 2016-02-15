@@ -1,6 +1,7 @@
 /* globals describe, before, after */
 
 const sigServer = require('../../src/sig-server')
+const fs = require('fs')
 
 describe('sig-server', () => {
   before((done) => {
@@ -11,12 +12,11 @@ describe('sig-server', () => {
     sigServer.stop(done)
   })
 
-  require('./test-http')
-  require('./test-join')
-  require('./test-finger-best-fit')
-  require('./test-update-finger')
-
-  // require('./test-send-offer')
-  // require('./test-3-peers')
-  // require('./test-8-peers')
+  const tests = fs.readdirSync(__dirname)
+  tests.filter(file => {
+    if (file !== 'index.js') { return true }
+    return false
+  }).forEach(file => {
+    require('./' + file)
+  })
 })
