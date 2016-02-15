@@ -16,8 +16,13 @@ module.exports = (peerId, idealFingerId, currentFingerId, newFingerId) => {
     if (n > 0 && n < c) {
       return true
     }
-  } else if (n >= i && n < c) {
-    return true
+  } else {
+    if (c < p && n > p) {
+      return true
+    }
+    if (n >= i && n < c) {
+      return true
+    }
   }
   return false
 }

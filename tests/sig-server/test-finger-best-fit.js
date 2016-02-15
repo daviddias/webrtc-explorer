@@ -22,6 +22,15 @@ describe('finger-best-fit', () => {
     done()
   })
 
+  it('when a smaller was in place', (done) => {
+    const peerId = new Id(366279746573)
+    const currentId = new Id(343862697473)
+    const idealId = new Id(366279746574)
+    const newId = new Id(616263646566)
+    expect(fingerBestFit(peerId, idealId, currentId, newId)).to.equal(true)
+    done()
+  })
+
   it.skip('peer id === 0', (done) => {
     done()
   })
