@@ -2,18 +2,23 @@
   "name": "webrtc-explorer",
   "version": "1.1.1",
   "description": "Chord inspired ring DHT algorithm using WebRTC as transport layer for P2P in the browser",
-  "main": "src/index.js",
+  "main": "src/explorer/index.js",
+  "bin": {
+    "sig-server": "node src/sig-server/bin"
+  },
   "scripts": {
-    "codestyle": "./node_modules/.bin/jscs -p google src/index.js tests/*.js",
-    "lint": "./node_modules/.bin/jshint .",
-    "test": "node ./node_modules/.bin/lab -r tap tests/*-test.js | ./node_modules/.bin/tap-spec",
-    "test-cov": "node ./node_modules/.bin/lab -t 80 tests/*-test.js",
-    "test-cov-html": "node ./node_modules/.bin/lab -r html -o coverage.html tests/*-test.js"
+    "lint": "standard",
+    "test": "npm run test:sig-server && npm run test:explorer",
+    "test:explorer": "",
+    "test:sig-server": "mocha tests/sig-server/index.js",
+    "sig-server": "node src/sig-server"
   },
   "precommit": [
-    "lint"
+    "lint",
+    "test"
   ],
   "keywords": [
+    "routing",
     "webrtc",
     "chord",
     "peer",
@@ -30,22 +35,18 @@
   "author": "David Dias <daviddias.p@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "bows": "^1.3.0",
-    "dht-id": "^1.0.0",
+    "debug": "^2.2.0",
     "eventemitter2": "^0.4.14",
-    "simple-peer": "^3.6.3",
-    "socket.io-client": "^1.1.0"
+    "simple-peer": "^5.12.0",
+    "socket.io": "^1.4.5",
+    "socket.io-client": "^1.4.5",
+    "webrtc-explorer-peer-id": "^1.1.0"
   },
   "devDependencies": {
-    "code": "^1.2.1",
-    "hapi": "^8.1.0",
-    "jscs": "^1.8.1",
-    "jshint": "^2.5.6",
-    "lab": "^5.0.1",
-    "moonboots_hapi": "^4.0.2",
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
     "piri-piri": "^0.3.1",
-    "piri-piri.client": "^0.3.0",
-    "precommit-hook": "^1.0.7",
-    "tap-spec": "^1.0.1"
+    "pre-commit": "^1.1.2",
+    "standard": "^6.0.5"
   }
 }
