@@ -8,26 +8,26 @@ function FingerTable (peerId, events, channelManager) {
   var predecessorId
   var table = {}
   // rowIndex: {fingerId: , channel:}
-  var ready = false
 
   self.predecessorUpdate = function (data) {
     predecessorId = data.predecessorId
   }
 
   self.fingerUpdate = function (data) {
-    log('finger-update', data)
+    console.log('finger-update', data)
     // 1. Check if needs to perform a new connect or just update an entry on the table
     // 2. Connect if necessary
     // 3. Once connected, update the finger tableA
 
     if (table[data.rowIndex] &&
       table[data.rowIndex].fingerId === data.fingerId) {
-      log('already had establish this channel with: ', data.fingerId)
+      console.log('already had establish this channel with: ', data.fingerId)
       return
     }
 
     channelManager.connect(data.fingerId, function (err, channel) {
-      log('finger table row update: ',
+      if (err) {}
+      console.log('finger table row update: ',
         data.rowIndex, data.fingerId)
       if (!table[data.rowIndex]) {
         table[data.rowIndex] = {}
@@ -38,7 +38,6 @@ function FingerTable (peerId, events, channelManager) {
       table[data.rowIndex].fingerId = data.fingerId
       table[data.rowIndex].channel = channel
     })
-
   }
 
   self.bestCandidate = function (dstId) {
@@ -103,7 +102,6 @@ function FingerTable (peerId, events, channelManager) {
         return false
       }
     }
-
   }
 
   self.channelTo = function (fingerId) {

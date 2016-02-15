@@ -3,7 +3,7 @@
 const sigServer = require('../../src/sig-server')
 const fs = require('fs')
 
-describe('sig-server', () => {
+describe('explorer', () => {
   before((done) => {
     sigServer.start(done)
   })
@@ -14,8 +14,8 @@ describe('sig-server', () => {
 
   const tests = fs.readdirSync(__dirname)
   tests.filter((file) => {
-    if (file !== 'index.js') { return true }
-    return false
+    if (file === 'index.js' || file === 'scripts') { return false }
+    return true
   }).forEach((file) => {
     require('./' + file)
   })

@@ -8,7 +8,7 @@ function ChannelManager (peerId, ioc, router) {
   // / establish a connection to another peer
 
   self.connect = function (dstId, cb) {
-    log('connect to: ', dstId)
+    console.log('connect to: ', dstId)
 
     var intentId = (~~(Math.random() * 1e9))
       .toString(36) + Date.now()
@@ -17,16 +17,16 @@ function ChannelManager (peerId, ioc, router) {
     trickle: false})
 
     channel.on('signal', function (signal) {
-      log('sendOffer')
+      console.log('sendOffer')
       ioc.emit('s-send-offer', {offer: {
-          intentId: intentId,
-          srcId: peerId.toHex(),
-          dstId: dstId,
-          signal: signal
+        intentId: intentId,
+        srcId: peerId.toHex(),
+        dstId: dstId,
+        signal: signal
       }})
     })
 
-    var listener = ioc.on('c-offer-accepted', offerAccepted)
+    ioc.on('c-offer-accepted', offerAccepted)
 
     function offerAccepted (data) {
       if (data.offer.intentId !== intentId) {
@@ -34,14 +34,14 @@ function ChannelManager (peerId, ioc, router) {
         //                        data.offer.intentId, intentId)
         return
       }
-      log('offerAccepted')
+      console.log('offerAccepted')
 
       channel.signal(data.offer.signal)
 
       channel.on('ready', function () {
-        log('channel ready to send')
+        console.log('channel ready to send')
         channel.on('message', function () {
-          log('DEBUG: this channel should be ' +
+          console.log('DEBUG: this channel should be ' +
             'only used to send and not to receive')
         })
         cb(null, channel)
@@ -52,11 +52,11 @@ function ChannelManager (peerId, ioc, router) {
   // / accept offers from peers that want to connect
 
   ioc.on('c-accept-offer', function (data) {
-    log('acceptOffer')
+    console.log('acceptOffer')
     var channel = new SimplePeer({trickle: false})
 
     channel.on('ready', function () {
-      log('channel ready to listen')
+      console.log('channel ready to listen')
       channel.on('message', router)
     })
 
@@ -68,5 +68,4 @@ function ChannelManager (peerId, ioc, router) {
 
     channel.signal(data.offer.signal)
   })
-
 }

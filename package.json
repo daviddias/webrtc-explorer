@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "standard",
     "test": "npm run test:sig-server && npm run test:explorer",
-    "test:explorer": "",
+    "test:explorer": "mocha tests/explorer/index.js",
     "test:sig-server": "mocha tests/sig-server/index.js",
     "sig-server": "node src/sig-server"
   },

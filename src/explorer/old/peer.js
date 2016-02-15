@@ -1,11 +1,11 @@
-var ee2 = require('eventemitter2').EventEmitter2
+var EE2 = require('eventemitter2').EventEmitter2
 var io = require('socket.io-client')
 var bows = require('bows')
 var Id = require('dht-id')
 var FingerTable = require('./finger-table.js')
 var ChannelManager = require('./channel-manager.js')
 
-log = bows('webrtc-explorer')
+var log = bows('webrtc-explorer')
 
 exports = module.exports = Peer
 
@@ -14,10 +14,9 @@ exports = module.exports = Peer
 //     logging: defaults to false,
 // }
 function Peer (config) {
-  localStorage.debug = config.logging || false
   var self = this
 
-  self.events = new ee2({
+  self.events = new EE2({
     wildcard: true,
     newListener: false,
     maxListeners: 20
@@ -84,5 +83,4 @@ function Peer (config) {
       self.fingerTable.channelTo(nextHop).send(envelope)
     }
   }
-
 }
