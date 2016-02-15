@@ -20,8 +20,6 @@ function handle (socket) {
 
 // join this signaling server network
 function join (options) {
-  // console.log('does this look like a socket', this)
-
   if (options.peerId.length !== 12) {
     return this.emit('we-ready', new Error('Unvalid peerId length, must be 48 bits'))
   }
@@ -71,6 +69,7 @@ function join (options) {
 
       // if it had none, notify to get a successor
       if (peerTable[peerId].fingers['0'].current === undefined) {
+        peerTable[peerId].fingers['0'].current = newId
         peerTable[peerId].socket.emit('we-update-finger', {
           row: '0',
           id: newId
@@ -82,8 +81,13 @@ function join (options) {
       // find the first row that could use this finger
       rows.some((row) => {
         const finger = peerTable[peerId].fingers[row]
-        const bestCandidate = fingerBestFit(peerId, finger.ideal, finger.current, newId)
+        const bestCandidate = fingerBestFit(
+            new Id(peerId),
+            new Id(finger.ideal),
+            new Id(finger.current),
+            new Id(newId))
         if (bestCandidate) {
+          peerTable[peerId].fingers[row].current = newId
           peerTable[peerId].socket.emit('we-update-finger', {
             row: row,
             id: newId

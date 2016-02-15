@@ -1,6 +1,6 @@
 /* globals describe, it, after */
 
-// const expect = require('chai').expect
+const expect = require('chai').expect
 const io = require('socket.io-client')
 
 describe('update-finger', () => {
@@ -45,33 +45,66 @@ describe('update-finger', () => {
     }
   })
 
-  it('join four', (done) => {
+  it('join four', function (done) {
+    this.timeout(50000)
     var count = 0
-    const c1Id = new Buffer('6bytes').toString('hex')
-    const c2Id = new Buffer('48bits').toString('hex')
+    const c1Id = new Buffer('48bits').toString('hex')
+    const c2Id = new Buffer('6bytes').toString('hex')
     const c3Id = new Buffer('batata').toString('hex')
-    const c4Id = new Buffer('banana').toString('hex')
+    const c4Id = new Buffer('cebola').toString('hex')
 
-    // console.log('c1', c1Id)
-    // console.log('c2', c2Id)
-    // console.log('c3', c3Id)
-    // console.log('c4', c4Id)
+    console.log('c1', c1Id)
+    console.log('c2', c2Id)
+    console.log('c3', c3Id)
+    console.log('c4', c4Id)
 
-    c1.once('we-ready', ready)
-    c2.once('we-ready', ready)
-    c3.once('we-ready', ready)
-    c4.once('we-ready', ready)
+    c1.once('we-ready', tick)
+    c2.once('we-ready', tick)
+    c3.once('we-ready', tick)
+    c4.once('we-ready', tick)
 
-    function ready () {
-      if (++count === 4) {
-        setTimeout(done, 800)
+    c1.once('we-update-finger', (update) => {
+      expect(update.row).to.equal('0')
+      expect(update.id).to.equal(c2Id)
+      tick()
+    })
+    c2.once('we-update-finger', (update) => {
+      expect(update.row).to.equal('0')
+      expect(update.id).to.equal(c1Id)
+      tick()
+      c2.once('we-update-finger', (update) => {
+        expect(update.row).to.equal('0')
+        expect(update.id).to.equal(c3Id)
+        tick()
+      })
+    })
+    c3.once('we-update-finger', (update) => {
+      expect(update.row).to.equal('0')
+      expect(update.id).to.equal(c1Id)
+      tick()
+      c3.once('we-update-finger', (update) => {
+        expect(update.row).to.equal('0')
+        expect(update.id).to.equal(c4Id)
+        tick()
+      })
+    })
+    c4.once('we-update-finger', (update) => {
+      expect(update.row).to.equal('0')
+      expect(update.id).to.equal(c1Id)
+      tick()
+    })
+
+    function tick () {
+      if (++count === 10) {
+        done()
+        // setTimeout(done, 800)
       }
     }
 
-    c1.emit('ss-join', { peerId: c1Id })
-    c2.emit('ss-join', { peerId: c2Id })
-    c3.emit('ss-join', { peerId: c3Id })
-    c4.emit('ss-join', { peerId: c4Id })
+    c1.emit('ss-join', { peerId: c1Id, notify: true })
+    c2.emit('ss-join', { peerId: c2Id, notify: true })
+    c3.emit('ss-join', { peerId: c3Id, notify: true })
+    c4.emit('ss-join', { peerId: c4Id, notify: true })
   })
 
   it.skip('update-finger c1 row 2', (done) => {
