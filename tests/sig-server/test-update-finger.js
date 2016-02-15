@@ -15,12 +15,23 @@ describe('update-finger', () => {
   var c2
   var c3
   var c4
+  var c5
+  const c1Id = new Buffer('48bits').toString('hex')
+  const c2Id = new Buffer('6bytes').toString('hex')
+  const c3Id = new Buffer('batata').toString('hex')
+  const c4Id = new Buffer('cebola').toString('hex')
+
+  // console.log('c1', c1Id)
+  // console.log('c2', c2Id)
+  // console.log('c3', c3Id)
+  // console.log('c4', c4Id)
 
   after((done) => {
     c1.disconnect()
     c2.disconnect()
     c3.disconnect()
     c4.disconnect()
+    c5.disconnect()
 
     done()
   })
@@ -48,15 +59,6 @@ describe('update-finger', () => {
   it('join four', function (done) {
     this.timeout(50000)
     var count = 0
-    const c1Id = new Buffer('48bits').toString('hex')
-    const c2Id = new Buffer('6bytes').toString('hex')
-    const c3Id = new Buffer('batata').toString('hex')
-    const c4Id = new Buffer('cebola').toString('hex')
-
-    console.log('c1', c1Id)
-    console.log('c2', c2Id)
-    console.log('c3', c3Id)
-    console.log('c4', c4Id)
 
     c1.once('we-ready', tick)
     c2.once('we-ready', tick)
@@ -107,15 +109,53 @@ describe('update-finger', () => {
     c4.emit('ss-join', { peerId: c4Id, notify: true })
   })
 
-  it.skip('update-finger c1 row 2', (done) => {
+  it('update-finger c1 row 2', (done) => {
+    c1.once('we-update-finger', (update) => {
+      expect(update.row).to.equal('2')
+      done()
+    })
+    c1.emit('ss-update-finger', {peerId: c1Id, row: '2'})
   })
 
-  it.skip('update-finger c2 row 10', (done) => {
+  it('update-finger c2 row 10', (done) => {
+    c2.once('we-update-finger', (update) => {
+      expect(update.row).to.equal('10')
+      done()
+    })
+    c2.emit('ss-update-finger', {peerId: c2Id, row: '10'})
   })
 
-  it.skip('update-finger c3 row 25', (done) => {
+  it('update-finger c3 row 25 and 30', (done) => {
+    c3.once('we-update-finger', (update) => {
+      expect(update.row).to.equal('25')
+      c3.emit('ss-update-finger', {peerId: c3Id, row: '30'})
+      c3.once('we-update-finger', (update) => {
+        expect(update.row).to.equal('30')
+        done()
+      })
+    })
+    c3.emit('ss-update-finger', {peerId: c3Id, row: '25'})
   })
 
-  it.skip('update-finger c4 row 47', (done) => {
+  it('join peer c5', (done) => {
+    const c5Id = new Buffer('fifthe').toString('hex')
+    // console.log(c5Id)
+    c5 = io.connect(url, options)
+    c5.on('connect', () => {
+      c5.emit('ss-join', { peerId: c5Id, notify: true })
+    })
+
+    var count = 0
+
+    c4.once('we-update-finger', tick)
+    c5.once('we-update-finger', tick)
+
+    function tick (update) {
+      if (++count === 2) {
+        done()
+      }
+    }
   })
+
+  it.skip('make a test with even more versatility', (done) => {})
 })

@@ -16,6 +16,9 @@ function handle (socket) {
   socket.on('ss-join', join.bind(socket))
   socket.on('disconnect', remove.bind(socket)) // socket.io own event
   socket.on('ss-handshake', forward.bind(socket))
+  socket.on('ss-update-finger', (request) => {
+    updateFinger(request.peerId, request.row)
+  })
 }
 
 // join this signaling server network
@@ -104,11 +107,19 @@ function updateFinger (peerId, row) {
   var availablePeers = Object.keys(peerTable)
   availablePeers.splice(availablePeers.indexOf(peerId), 1)
 
+  // if row hasn't been checked before
+  if (!peerTable[peerId].fingers[row]) {
+    peerTable[peerId].fingers[row] = {
+      ideal: idealFinger(new Id(peerId), row).toHex(),
+      current: undefined
+    }
+  }
+
   var best = availablePeers.shift()
   availablePeers.forEach((otherId) => {
     const isFBT = fingerBestFit(
         new Id(peerId),
-        new Id(peerTable[peerId].fingers['0'].ideal),
+        new Id(peerTable[peerId].fingers[row].ideal),
         new Id(best),
         new Id(otherId))
     if (isFBT) {
