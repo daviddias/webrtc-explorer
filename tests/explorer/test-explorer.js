@@ -5,6 +5,7 @@ const pp = require('piri-piri')
 const expect = require('chai').expect
 
 describe('explorer', () => {
+  var ppId0
   var ppId1
 
   before((done) => {
@@ -21,7 +22,7 @@ describe('explorer', () => {
     done()
   })
 
-  it('spawn one browser', (done) => {
+  it('spawn first browser', (done) => {
     expect(Object.keys(pp.clients).length).to.equal(0)
     pp.browser.spawn('./tests/explorer/scripts/explorer-peer.js', 1, (err) => {
       // this only happens on the after, when browsers are told to exit
@@ -29,17 +30,43 @@ describe('explorer', () => {
     })
     setTimeout(() => {
       expect(Object.keys(pp.clients)[0]).to.exist
-      ppId1 = Object.keys(pp.clients)[0]
+      ppId0 = Object.keys(pp.clients)[0]
       done()
-      // pp.browser.send(id, 'exit')
-    }, 1000)
+    }, 500)
   })
 
-  it('browser 1 - connect to sig-server', (done) => {
-    done()
+  it('browser 0 - join (listen)', (done) => {
+    pp.browser.send(ppId0, 'listen')
+    setTimeout(() => {
+      expect(pp.clients[ppId0].msgs.length).to.equal(1)
+      const msg = pp.clients[ppId0].msgs.shift()
+      expect(msg).to.equal('listening')
+      done()
+    }, 500)
   })
 
-  it('such test', (done) => {
-    done()
+  it('spawn another browser', (done) => {
+    expect(Object.keys(pp.clients).length).to.equal(1)
+    pp.browser.spawn('./tests/explorer/scripts/explorer-peer.js', 1, (err) => {
+      // this only happens on the after, when browsers are told to exit
+      expect(err).to.not.exist
+    })
+    setTimeout(() => {
+      expect(Object.keys(pp.clients)[1]).to.exist
+      ppId1 = Object.keys(pp.clients)[1]
+      done()
+    }, 500)
+  })
+
+  it('browser 1 - join (listen)', (done) => {
+    pp.browser.send(ppId1, 'listen')
+    setTimeout(() => {
+      expect(pp.clients[ppId1].msgs.length).to.equal(1)
+      const msg = pp.clients[ppId1].msgs.shift()
+      expect(msg).to.equal('listening')
+      // TODO
+      // notify and handshake magic still has to happen
+      done()
+    }, 500)
   })
 })

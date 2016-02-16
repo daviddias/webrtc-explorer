@@ -8,14 +8,18 @@ var io
 exports = module.exports = Explorer
 
 function Explorer (options) {
+  options = options || {}
   this.dial = () => {
     // successfully verify that a connection is establishable to the other peer
     // return a stream that will route messages
   }
 
-  this.listen = (peerId, callback) => {
+  this.listen = (callback) => {
     // connect and join (gen Id first), wait to be established, then go
-    connect(join.apply(callback))
+    connect(options.url || 'http://localhost:9000', (err) => {
+      if (err) {}
+      join(callback)
+    })
   }
 
   // connect to the sig-server
