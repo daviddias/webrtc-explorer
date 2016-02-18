@@ -24,11 +24,11 @@ function handle (socket) {
 // join this signaling server network
 function join (options) {
   if (options.peerId.length !== 12) {
-    return this.emit('we-ready', new Error('Unvalid peerId length, must be 48 bits'))
+    return this.emit('we-ready', new Error('Unvalid peerId length, must be 48 bits, received: ' + options.peerId).toString())
   }
 
   if (peerTable[options.peerId]) {
-    return this.emit('we-ready', new Error('peerId already exists'))
+    return this.emit('we-ready', new Error('peerId already exists').toString())
   }
 
   peerTable[options.peerId] = {
@@ -41,8 +41,8 @@ function join (options) {
       }}
   }
 
-  this.emit('we-ready')
   log('peer joined: ' + options.peerId)
+  this.emit('we-ready')
   if (Object.keys(peerTable).length === 1) {
     return log('This was the first peer join, do nothing')
   }
