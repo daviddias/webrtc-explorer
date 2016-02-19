@@ -2,7 +2,8 @@ const SocketIO = require('socket.io-client')
 const config = require('./config')
 const log = config.log
 const fingerTable = require('./finger-table')
-const router = require('./message-router.js')
+const router = require('./message-router')
+const channel = require('./channel')
 
 var io
 
@@ -44,6 +45,10 @@ exports.updateFingerTable = () => {
   // 1. send a request by each Finger Row that I'm already using
 }
 
+exports.getFingerTable = () => {
+  return fingerTable.table
+}
+
 // connect to the sig-server
 function connect (url, callback) {
   io = SocketIO.connect(url)
@@ -57,6 +62,8 @@ function join (callback) {
     peerId: config.peerId.toHex(),
     notify: true
   })
-  io.on('we-update-finger', fingerTable.updateFinger)
+  io.on('we-update-finger', fingerTable.updateFinger(io))
+  io.on('we-handshake', channel.accept(io))
+
   io.once('we-ready', callback)
 }

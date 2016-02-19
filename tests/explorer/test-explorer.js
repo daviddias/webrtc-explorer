@@ -58,15 +58,21 @@ describe('explorer', () => {
     }, 500)
   })
 
-  it('browser 1 - join (listen)', (done) => {
+  it('browser 1 - join (listen)', function (done) {
+    this.timeout(50000)
     pp.browser.send(ppId1, 'listen')
     setTimeout(() => {
       expect(pp.clients[ppId1].msgs.length).to.equal(1)
-      const msg = pp.clients[ppId1].msgs.shift()
-      expect(msg).to.equal('listening')
-      // TODO
-      // notify and handshake magic still has to happen
-      done()
+      var msg = pp.clients[ppId1].msgs.shift()
+      setTimeout(() => {
+        pp.browser.send(ppId1, 'get-finger-table')
+        setTimeout(() => {
+          expect(pp.clients[ppId1].msgs.length).to.equal(1)
+          msg = pp.clients[ppId1].msgs.shift()
+          expect(Object.keys(msg[0])[0]).to.equal('0')
+          done()
+        }, 200)
+      }, 200)
     }, 500)
   })
 })

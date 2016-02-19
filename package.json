@@ -13,6 +13,9 @@
     "test:sig-server": "mocha tests/sig-server/index.js",
     "sig-server": "node src/sig-server"
   },
+  "standard": {
+    "ignore": ["examples/explorer-b.js"]
+  },
   "precommit": [
     "lint",
     "test"

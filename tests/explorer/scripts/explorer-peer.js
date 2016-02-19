@@ -15,6 +15,16 @@ module.exports = function (args) {
     })
   })
 
+  ppc.handle('get-finger-table', () => {
+    var ft = explorer.getFingerTable()
+    ft = Object.keys(ft).map((row) => {
+      var el = {}
+      el[row] = ft[row].peerId
+      return el
+    })
+    ppc.send(ft)
+  })
+
   // only connect after registering all the handles
   ppc.connect((err, socket) => {
     if (err) {
