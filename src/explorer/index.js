@@ -2,16 +2,24 @@ const SocketIO = require('socket.io-client')
 const config = require('./config')
 const log = config.log
 const fingerTable = require('./finger-table')
-const router = require('./message-router')
+const connSwitch = require('./connection-switch')
 const channel = require('./channel')
+
+console.log('My peerId:', config.peerId.toHex())
 
 var io
 
 exports = module.exports
 
-exports.dial = () => {
-  // successfully verify that a connection is establishable to the other peer
-  // return a stream that will route messages
+exports.dial = (dstId, callback) => {
+  // TODO
+  // create a duplex stream
+  // create a conn
+  // write a SYN to conn.out
+  // when a ACK arrives
+  //   conn.inc.pipe(ds)
+  //   ds.pipe(conn.out)
+  //   callback(to signal that it is ready)
 }
 
 exports.createListener = (options, callback) => {
@@ -20,7 +28,7 @@ exports.createListener = (options, callback) => {
     options = {}
   }
 
-  router.setIncConnCB(callback)
+  connSwitch.setIncConnCB(callback)
 
   return {
     listen: (callback) => {

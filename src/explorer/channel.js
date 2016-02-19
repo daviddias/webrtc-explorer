@@ -1,6 +1,6 @@
 const SimplePeer = require('simple-peer')
 const config = require('./config')
-const messageRouter = require('./message-router')
+const router = require('./message-router')
 
 exports = module.exports
 
@@ -51,7 +51,7 @@ exports.accept = function (io) {
 
     channel.on('connect', function () {
       // console.log('channel ready to listen')
-      channel.on('message', messageRouter.routeMessage)
+      channel.on('message', router.route)
     })
 
     channel.on('signal', function (signal) {

@@ -8257,8 +8257,7 @@ exports.connect = (io, dstId, callback) => {
   const channel = new SimplePeer({initiator: true, trickle: false})
 
   channel.on('signal', function (signal) {
-    console.log('hey')
-    console.log('send offer (src, dst):', config.peerId.toHex(), dstId)
+    // console.log('send offer (src, dst):', config.peerId.toHex(), dstId)
     io.emit('ss-handshake', {
       intentId: intentId,
       srcId: config.peerId.toHex(),
@@ -8267,16 +8266,14 @@ exports.connect = (io, dstId, callback) => {
     })
   })
 
-  console.log('-> all set')
-
   io.on('we-handshake', (offer) => {
     if (offer.intentId !== intentId || !offer.answer) {
       return
     }
-    console.log('offer was accepted (src, dst):', config.peerId.toHex(), dstId)
+    // console.log('offer was accepted (src, dst):', config.peerId.toHex(), dstId)
 
     channel.on('connect', function () {
-      console.log('channel ready to send')
+      // console.log('channel ready to send')
       channel.on('message', function () {
         console.log('DEBUG: this channel should be only used to send and not to receive')
       })
@@ -8296,17 +8293,16 @@ exports.accept = function (io) {
     //
     if (offer.answer) { return }
 
-    console.log('received an offer (src, dst):', offer.srcId, offer.dstId)
+    // console.log('received an offer (src, dst):', offer.srcId, offer.dstId)
     const channel = new SimplePeer({trickle: false})
 
     channel.on('connect', function () {
-      console.log('channel ready to listen')
+      // console.log('channel ready to listen')
       channel.on('message', messageRouter.routeMessage)
     })
 
     channel.on('signal', function (signal) {
       // log('sending back my signal data')
-      console.log('signalling back')
       offer.signal = signal
       offer.answer = true
       io.emit('ss-handshake', offer)
@@ -8345,13 +8341,12 @@ exports.updateFinger = function (io) {
     if (table[update.row] && table[update.row].peerId === update.id) {
       return console.log('update is not new')
     }
-    console.log('calling connect')
 
     channelManager.connect(io, update.id, (err, channel) => {
       if (err) {
         return console.log('could not create the channel', err)
       }
-      console.log('new channel added to the finger table', update.id)
+      console.log(update.id, 'added to finger table on row:', update.row)
       table[update.row] = {peerId: update.id, channel: channel}
     })
   }
@@ -8369,6 +8364,8 @@ const log = config.log
 const fingerTable = require('./finger-table')
 const router = require('./message-router')
 const channel = require('./channel')
+
+console.log('My peerId:', config.peerId.toHex())
 
 var io
 
