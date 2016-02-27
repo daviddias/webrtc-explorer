@@ -7,26 +7,80 @@
 ![](https://raw.githubusercontent.com/diasdavid/interface-connection/master/img/badge.png)
 ![](https://raw.githubusercontent.com/diasdavid/interface-transport/master/img/badge.png)
 
-> **tl;dr** `webrtc-explorer` is a [Chord][http://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf] inspired, P2P Network Routing Overlay designed for the Web platform (browsers), using WebRTC as its layer of transport between peers and WebSockets for the exchange of signalling data (setting up a connection and NAT traversal). Essentially, webrtc-explorer enables your peers (browsers) to communicate between each other without the need to have a server to be the mediator.
+> **tl;dr** `webrtc-explorer` is a [Chord](http://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf) inspired, P2P Network Routing Overlay designed for the Web platform (browsers), using WebRTC as its layer of transport between peers and WebSockets for the exchange of signalling data (setting up a connection and NAT traversal). Essentially, webrtc-explorer enables your peers (browsers) to communicate between each other without the need to have a server to be the mediator.
 
 # Usage
 
-`webrtc-explorer` uses [browserify](http://browserify.org)
+## Install
 
-### Create a new peer
-
-```javascript
-var explorer = require('webrtc-explorer')
+```sh
+> npm install webrtc-explorer
 ```
 
-### listen
+If you want to use the Signalling Server that comes with webrtc-explorer, you can use it through your terminal after installing webrtc-explorer globally
 
-### dial
+```sh
+> npm install webrtc-explorer --global
+# ...
+> sig-server
+Signalling Server Started
+# now the signalling server is running
+```
 
-### updateFinger
+Use [browserify](http://browserify.org) to load transpile your JS code that uses webrtc-explorer, so that all of the dependencies are correctly loaded.
 
-### updateFingerTable
+## API
 
+```javascript
+const explorer = require('webrtc-explorer')
+```
+
+#### listen
+
+Connects your explorer node to the signalling server, and listens for incomming connections from other peers.
+
+```javascript
+const listener = explorer.createListener((socket) => {
+  // socket with another peer
+})
+
+listener.listen((err) => {
+  if (err) {
+    return console.log('Error listening:', err)
+  }
+  console.log('explorer is now listining to incomming connections')
+})
+```
+
+#### dial
+
+Dials into another peer, using the P2P Overlay Routing.
+
+```JavaScript
+const socket = explorer.dial(<peerId> [, <readyCallback>])
+```
+
+Note: since an explorer node routes messages for other peers and itself, it needs first to be ready to 'listen', in order to be able to use the network to send.
+
+#### updateFinger
+
+_not implemented yet_
+
+updates a finger on the finger table (if no finger was present on that row, it is added).
+
+```JavaScript
+explorer.updateFinger(<row>)
+```
+
+#### updateFingerTable
+
+_not implemented yet_
+
+updates all the rows on the finger table that already had a peer
+
+```JavaScript
+explorer.updateFingerTable(<row>)
+```
 
 # Architecture
 
