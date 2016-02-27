@@ -15,24 +15,41 @@ var io
 exports = module.exports
 
 exports.dial = (dstId, callback) => {
-  // create a duplex stream
+  // create a duplex passthrough stream
   // create a conn
   // write a SYN to conn.out
   // when a ACK arrives
   //   conn.inc.pipe(ds)
   //   ds.pipe(conn.out)
   //   callback(to signal that it is ready)
-  const ds = new Duplex()
+  //
+  var set = false
+  var reader
+
   const conn = connSwitch.createConn(peerId.toHex(), dstId)
+  console.log('Sending SYN to:', dstId)
   conn.out.write('SYN')
+
   conn.inc.once('data', (data) => {
     console.log('received ACK:', data)
-    if (data === 'ACK') {
-      conn.inc.pipe(ds)
-      ds.pipe(conn.out)
-      if (callback) {
-        callback(ds)
+    conn.inc.on('data', (data) => {
+      reader.push(data)
+    })
+    if (callback) {
+      callback(ds)
+    }
+  })
+
+  const ds = new Duplex({
+    read: function (n) {
+      if (set) {
+        return
       }
+      set = true
+      reader = this
+    },
+    write: function (chunk, enc, next) {
+      conn.out.write(chunk)
     }
   })
 
@@ -51,10 +68,23 @@ exports.createListener = (options, callback) => {
     // ds.pipe(conn.out)
     // conn.inc.pipe(ds)
     // callback(ds)
+    var set = false
+    const ds = new Duplex({
+      read: function (n) {
+        if (set) {
+          return
+        }
+        set = true
+        conn.inc.on('data', (data) => {
+          this.push(data)
+        })
+      },
+      write: function (chunk, enc, next) {
+        conn.out.write(chunk)
+      }
+    })
+
     conn.out.write('ACK')
-    const ds = new Duplex()
-    ds.pipe(conn.out)
-    conn.inc.pipe(ds)
     callback(ds)
   })
 

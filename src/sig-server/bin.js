@@ -1,3 +1,5 @@
+#!/usr/local/bin/node
+
 const sigServer = require('./index')
 
 sigServer.start(() => {

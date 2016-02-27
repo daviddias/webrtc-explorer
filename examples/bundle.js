@@ -1,8 +1,14 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
 const explorer = require('../src/explorer')
+
+global.explorer = explorer
 
 const listener = explorer.createListener((conn) => {
   console.log('received conn')
+  conn.on('data', function (data) {
+    console.log('received some data', data)
+  })
 })
 
 listener.listen((err) => {
@@ -12,6 +18,7 @@ listener.listen((err) => {
   console.log('Listening')
 })
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../src/explorer":58}],2:[function(require,module,exports){
 module.exports = after
 
@@ -889,7 +896,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":34}],12:[function(require,module,exports){
+},{"ms":33}],12:[function(require,module,exports){
 
 module.exports =  require('./lib/');
 
@@ -1637,7 +1644,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":15,"./transports":16,"component-emitter":8,"debug":10,"engine.io-parser":22,"indexof":30,"parsejson":36,"parseqs":37,"parseuri":38}],15:[function(require,module,exports){
+},{"./transport":15,"./transports":16,"component-emitter":8,"debug":10,"engine.io-parser":22,"indexof":30,"parsejson":35,"parseqs":36,"parseuri":37}],15:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -2758,7 +2765,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
 };
 
-},{"../transport":15,"component-inherit":9,"debug":10,"engine.io-parser":22,"parseqs":37,"xmlhttprequest-ssl":21,"yeast":54}],20:[function(require,module,exports){
+},{"../transport":15,"component-inherit":9,"debug":10,"engine.io-parser":22,"parseqs":36,"xmlhttprequest-ssl":21,"yeast":53}],20:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -3050,7 +3057,7 @@ WS.prototype.check = function(){
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../transport":15,"component-inherit":9,"debug":10,"engine.io-parser":22,"parseqs":37,"ws":61,"yeast":54}],21:[function(require,module,exports){
+},{"../transport":15,"component-inherit":9,"debug":10,"engine.io-parser":22,"parseqs":36,"ws":61,"yeast":53}],21:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -3686,7 +3693,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":23,"after":2,"arraybuffer.slice":3,"base64-arraybuffer":5,"blob":6,"has-binary":24,"utf8":51}],23:[function(require,module,exports){
+},{"./keys":23,"after":2,"arraybuffer.slice":3,"base64-arraybuffer":5,"blob":6,"has-binary":24,"utf8":50}],23:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -3769,7 +3776,7 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":33}],25:[function(require,module,exports){
+},{"isarray":32}],25:[function(require,module,exports){
 // originally pulled out of simple-peer
 
 module.exports = function getBrowserRTC () {
@@ -4033,7 +4040,7 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":33}],28:[function(require,module,exports){
+},{"isarray":32}],28:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -4153,54 +4160,11 @@ if (typeof Object.create === 'function') {
 }
 
 },{}],32:[function(require,module,exports){
-module.exports      = isTypedArray
-isTypedArray.strict = isStrictTypedArray
-isTypedArray.loose  = isLooseTypedArray
-
-var toString = Object.prototype.toString
-var names = {
-    '[object Int8Array]': true
-  , '[object Int16Array]': true
-  , '[object Int32Array]': true
-  , '[object Uint8Array]': true
-  , '[object Uint8ClampedArray]': true
-  , '[object Uint16Array]': true
-  , '[object Uint32Array]': true
-  , '[object Float32Array]': true
-  , '[object Float64Array]': true
-}
-
-function isTypedArray(arr) {
-  return (
-       isStrictTypedArray(arr)
-    || isLooseTypedArray(arr)
-  )
-}
-
-function isStrictTypedArray(arr) {
-  return (
-       arr instanceof Int8Array
-    || arr instanceof Int16Array
-    || arr instanceof Int32Array
-    || arr instanceof Uint8Array
-    || arr instanceof Uint8ClampedArray
-    || arr instanceof Uint16Array
-    || arr instanceof Uint32Array
-    || arr instanceof Float32Array
-    || arr instanceof Float64Array
-  )
-}
-
-function isLooseTypedArray(arr) {
-  return names[toString.call(arr)]
-}
-
-},{}],33:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -4327,7 +4291,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var wrappy = require('wrappy')
 module.exports = wrappy(once)
 
@@ -4350,7 +4314,7 @@ function once (fn) {
   return f
 }
 
-},{"wrappy":53}],36:[function(require,module,exports){
+},{"wrappy":52}],35:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -4385,7 +4349,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -4424,7 +4388,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -4465,17 +4429,14 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 (function (Buffer){
-/* global Blob */
-
 module.exports = Peer
 
 var debug = require('debug')('simple-peer')
 var getBrowserRTC = require('get-browser-rtc')
 var hat = require('hat')
 var inherits = require('inherits')
-var isTypedArray = require('is-typedarray')
 var once = require('once')
 var stream = require('stream')
 
@@ -4659,12 +4620,6 @@ Peer.prototype.signal = function (data) {
  */
 Peer.prototype.send = function (chunk) {
   var self = this
-
-  if (!isTypedArray.strict(chunk) && !(chunk instanceof ArrayBuffer) &&
-    !Buffer.isBuffer(chunk) && typeof chunk !== 'string' &&
-    (typeof Blob === 'undefined' || !(chunk instanceof Blob))) {
-    chunk = JSON.stringify(chunk)
-  }
 
   // HACK: `wrtc` module doesn't accept node.js buffer. See issue: #60
   if (Buffer.isBuffer(chunk) && self._isWrtc) {
@@ -4885,14 +4840,29 @@ Peer.prototype._maybeReady = function () {
       var local = localCandidates[item.localCandidateId]
       var remote = remoteCandidates[item.remoteCandidateId]
 
-      self.remoteAddress = remote.ipAddress
-      self.remotePort = Number(remote.portNumber)
-      self.remoteFamily = 'IPv4'
-      self._debug('connect remote: %s:%s', self.remoteAddress, self.remotePort)
-
-      self.localAddress = local.ipAddress
-      self.localPort = Number(local.portNumber)
+      if (local) {
+        self.localAddress = local.ipAddress
+        self.localPort = Number(local.portNumber)
+      } else if (typeof item.googLocalAddress === 'string') {
+        // Sometimes `item.id` is undefined in `wrtc` and Chrome
+        // See: https://github.com/feross/simple-peer/issues/66
+        local = item.googLocalAddress.split(':')
+        self.localAddress = local[0]
+        self.localPort = Number(local[1])
+      }
       self._debug('connect local: %s:%s', self.localAddress, self.localPort)
+
+      if (remote) {
+        self.remoteAddress = remote.ipAddress
+        self.remotePort = Number(remote.portNumber)
+        self.remoteFamily = 'IPv4'
+      } else if (typeof item.googRemoteAddress === 'string') {
+        remote = item.googRemoteAddress.split(':')
+        self.remoteAddress = remote[0]
+        self.remotePort = Number(remote[1])
+        self.remoteFamily = 'IPv4'
+      }
+      self._debug('connect remote: %s:%s', self.remoteAddress, self.remotePort)
     }
 
     items.forEach(function (item) {
@@ -4966,15 +4936,8 @@ Peer.prototype._onChannelMessage = function (event) {
   var data = event.data
   self._debug('read: %d bytes', data.byteLength || data.length)
 
-  if (data instanceof ArrayBuffer) {
-    data = new Buffer(data)
-    self.push(data)
-  } else {
-    try {
-      data = JSON.parse(data)
-    } catch (err) {}
-    self.emit('data', data)
-  }
+  if (data instanceof ArrayBuffer) data = new Buffer(data)
+  self.push(data)
 }
 
 Peer.prototype._onChannelOpen = function () {
@@ -5017,7 +4980,7 @@ Peer.prototype._debug = function () {
 function noop () {}
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":62,"debug":10,"get-browser-rtc":25,"hat":29,"inherits":31,"is-typedarray":32,"once":35,"stream":82}],40:[function(require,module,exports){
+},{"buffer":62,"debug":10,"get-browser-rtc":25,"hat":29,"inherits":31,"once":34,"stream":82}],39:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -5111,7 +5074,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":41,"./socket":43,"./url":44,"debug":10,"socket.io-parser":47}],41:[function(require,module,exports){
+},{"./manager":40,"./socket":42,"./url":43,"debug":10,"socket.io-parser":46}],40:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -5670,7 +5633,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":42,"./socket":43,"backo2":4,"component-bind":7,"component-emitter":45,"debug":10,"engine.io-client":12,"indexof":30,"socket.io-parser":47}],42:[function(require,module,exports){
+},{"./on":41,"./socket":42,"backo2":4,"component-bind":7,"component-emitter":44,"debug":10,"engine.io-client":12,"indexof":30,"socket.io-parser":46}],41:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -5696,7 +5659,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],43:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6110,7 +6073,7 @@ Socket.prototype.compress = function(compress){
   return this;
 };
 
-},{"./on":42,"component-bind":7,"component-emitter":45,"debug":10,"has-binary":27,"socket.io-parser":47,"to-array":50}],44:[function(require,module,exports){
+},{"./on":41,"component-bind":7,"component-emitter":44,"debug":10,"has-binary":27,"socket.io-parser":46,"to-array":49}],43:[function(require,module,exports){
 (function (global){
 
 /**
@@ -6190,7 +6153,7 @@ function url(uri, loc){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":10,"parseuri":38}],45:[function(require,module,exports){
+},{"debug":10,"parseuri":37}],44:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -6353,7 +6316,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],46:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -6498,7 +6461,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":48,"isarray":33}],47:[function(require,module,exports){
+},{"./is-buffer":47,"isarray":32}],46:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6900,7 +6863,7 @@ function error(data){
   };
 }
 
-},{"./binary":46,"./is-buffer":48,"component-emitter":8,"debug":10,"isarray":33,"json3":49}],48:[function(require,module,exports){
+},{"./binary":45,"./is-buffer":47,"component-emitter":8,"debug":10,"isarray":32,"json3":48}],47:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -6917,7 +6880,7 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (global){
 /*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
 ;(function () {
@@ -7823,7 +7786,7 @@ function isBuf(obj) {
 }).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],50:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -7838,7 +7801,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],51:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -8086,7 +8049,7 @@ function toArray(list, index) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],52:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 var sha1 = require('git-sha1')
 
 exports = module.exports = Id
@@ -8139,7 +8102,7 @@ exports.hash = function (content) {
   return sha1(content).substring(0, 12)
 }
 
-},{"git-sha1":26}],53:[function(require,module,exports){
+},{"git-sha1":26}],52:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -8174,7 +8137,7 @@ function wrappy (fn, cb) {
   }
 }
 
-},{}],54:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -8244,10 +8207,10 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],55:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 const SimplePeer = require('simple-peer')
 const config = require('./config')
-const messageRouter = require('./message-router')
+const router = require('./message-router')
 
 exports = module.exports
 
@@ -8274,7 +8237,7 @@ exports.connect = (io, dstId, callback) => {
 
     channel.on('connect', function () {
       // console.log('channel ready to send')
-      channel.on('message', function () {
+      channel.on('data', function () {
         console.log('DEBUG: this channel should be only used to send and not to receive')
       })
       callback(null, channel)
@@ -8298,7 +8261,7 @@ exports.accept = function (io) {
 
     channel.on('connect', function () {
       // console.log('channel ready to listen')
-      channel.on('message', messageRouter.routeMessage)
+      channel.on('data', router.route)
     })
 
     channel.on('signal', function (signal) {
@@ -8312,7 +8275,7 @@ exports.accept = function (io) {
   }
 }
 
-},{"./config":56,"./message-router":59,"simple-peer":39}],56:[function(require,module,exports){
+},{"./config":55,"./message-router":59,"simple-peer":38}],55:[function(require,module,exports){
 const Id = require('webrtc-explorer-peer-id')
 const debug = require('debug')
 const log = debug('explorer')
@@ -8323,16 +8286,110 @@ module.exports = {
   peerId: new Id()
 }
 
-},{"debug":10,"webrtc-explorer-peer-id":52}],57:[function(require,module,exports){
+},{"debug":10,"webrtc-explorer-peer-id":51}],56:[function(require,module,exports){
+const stream = require('stream')
+const PassThrough = stream.PassThrough
+const Writable = stream.Writable
+const router = require('./message-router')
+const config = require('./config')
+// const log = config.log
+const peerId = config.peerId
+
+exports = module.exports
+
+var incConnCB = () => {}
+
+const connections = {}
+// list of connections, by connId, each conn is a duplex stream pair
+// { connId: {
+//   inc: duplex stream
+//   out: duplex stream (pair of inc)
+// }
+
+exports.setIncConnCB = (func) => {
+  incConnCB = func
+}
+
+exports.receiveMessage = (message) => {
+  // message struct
+  // {
+  //   srcId:
+  //   dstId:
+  //   connId:
+  //   leap:
+  //   data:
+  // }
+
+  // check if message has indeed my Id
+  //   if yes, check if there is already a conn
+  //     if yes write to that conn (inc)
+  //     if not, create a conn and call incConnCB and send a ACK back
+  //   if not, send message back saying that Id doesn't exist
+
+  if (message.dstId === peerId.toHex()) {
+    if (connections[message.connId]) {
+      connections[message.connId].inc.write(message.data)
+    } else {
+      console.log('received SYN:', message.data)
+      // we got to invert srcId and dstId so that messages are routed back
+      const conn = createConn(message.dstId, message.srcId, message.connId)
+      incConnCB(conn)
+    }
+  } else {
+    const reply = {
+      srcId: peerId.toHex(),
+      dstId: message.srcId,
+      connId: message.connId,
+      data: message.dstId + ' does not exist'
+    }
+    router.send(reply)
+  }
+}
+
+exports.createConn = createConn
+function createConn (srcId, dstId, connId) {
+  // create a duplex stream pair
+  // out.on('data') encapsulate chunk with: connId, srcId, dstId and then router.send(message)
+  //
+  console.log('creating conn')
+
+  connId = connId || (~~(Math.random() * 1e9)).toString(36) + Date.now()
+
+  const out = new Writable()
+  const inc = new PassThrough()
+
+  out._write = (data, enc, cb) => {
+    const message = {
+      connId: connId,
+      data: data,
+      srcId: srcId,
+      dstId: dstId
+    }
+    router.send(message)
+    cb()
+  }
+
+  connections[connId] = {
+    inc: inc,
+    out: out
+  }
+
+  return connections[connId]
+}
+
+},{"./config":55,"./message-router":59,"stream":82}],57:[function(require,module,exports){
 const config = require('./config')
 const log = config.log
 const channelManager = require('./channel')
+const Id = require('webrtc-explorer-peer-id')
 
 exports = module.exports
 
 // {row: {peerId: <>, channel: <>}}
 const table = {}
 exports.table = table
+
+var predecessorId
 
 exports.updateFinger = function (io) {
   return (update) => {
@@ -8352,28 +8409,143 @@ exports.updateFinger = function (io) {
   }
 }
 
-exports.nextHop = (dstId) => {
-  // TODO
-  // 1. return the next best hop
+exports.updatePredecessor = function (io) {
+  return (pId) => {
+    predecessorId = pId
+  }
 }
 
-},{"./channel":55,"./config":56}],58:[function(require,module,exports){
+exports.forMe = (dstId) => {
+  var forMe = false
+
+  dstId = new Id(dstId).toDec()
+
+  interval(new Id(predecessorId).toDec(), config.peerId.toDec())
+    .some((interval) => {
+      if (isIn(interval, dstId)) {
+        forMe = true
+        return true
+      }
+    })
+
+  return forMe
+}
+
+// Identify the best candidate to send when sending to destId
+exports.nextHop = (dstId) => {
+  if (typeof dstId === 'object') {
+    dstId = dstId.toDec()
+  } else {
+    dstId = new Id(dstId).toDec()
+  }
+  var lower = config.peerId
+  var next
+
+  const fingers = Object.keys(table)
+  if (fingers.length === 1) {
+    return table['0'].peerId
+  }
+
+  fingers.some((row) => {
+    const upper = new Id(table[row].fingerId)
+
+    interval(lower.toDec(), upper.toDec())
+      .some((interval) => {
+        if (isIn(interval, dstId)) {
+          next = upper.toHex()
+          return true
+        }
+      })
+
+    // if found
+    if (next) { return true }
+    lower = upper
+  })
+
+  if (!next) { // if we don't know the best, send to best we can
+    next = lower.toHex()
+  }
+
+  return next
+}
+
+function interval (a, b) {
+  const SPIN = '1000000000000'
+  if (b < a) {
+    return [
+      [a, new Id(SPIN).toDec()],
+      [0, b]
+    ]
+  } else {
+    return [[a, b]]
+  }
+}
+
+function isIn (interval, dstId) {
+  if (dstId > interval[0] && dstId <= interval[1]) {
+    return true
+  } else {
+    return false
+  }
+}
+
+},{"./channel":54,"./config":55,"webrtc-explorer-peer-id":51}],58:[function(require,module,exports){
 const SocketIO = require('socket.io-client')
 const config = require('./config')
 const log = config.log
 const fingerTable = require('./finger-table')
-const router = require('./message-router')
+const connSwitch = require('./connection-switch')
 const channel = require('./channel')
+const stream = require('stream')
+const Duplex = stream.Duplex
+const peerId = config.peerId
 
-console.log('My peerId:', config.peerId.toHex())
+console.log('My peerId:', peerId.toHex())
 
 var io
 
 exports = module.exports
 
-exports.dial = () => {
-  // successfully verify that a connection is establishable to the other peer
-  // return a stream that will route messages
+exports.dial = (dstId, callback) => {
+  // create a duplex passthrough stream
+  // create a conn
+  // write a SYN to conn.out
+  // when a ACK arrives
+  //   conn.inc.pipe(ds)
+  //   ds.pipe(conn.out)
+  //   callback(to signal that it is ready)
+  //
+  var set = false
+  var reader
+
+  const conn = connSwitch.createConn(peerId.toHex(), dstId)
+  console.log('Sending SYN to:', dstId)
+  conn.out.write('SYN')
+
+  conn.inc.once('data', (data) => {
+    console.log('received ACK:', data)
+    conn.inc.on('data', (data) => {
+      reader.push(data)
+    })
+    if (callback) {
+      callback(ds)
+    }
+  })
+
+  const ds = new Duplex({
+    read: function (n) {
+      if (set) {
+        return
+      }
+      set = true
+      reader = this
+    },
+    write: function (chunk, enc, next) {
+      conn.out.write(chunk)
+    }
+  })
+
+  return ds
 }
 
 exports.createListener = (options, callback) => {
@@ -8382,7 +8554,31 @@ exports.createListener = (options, callback) => {
     options = {}
   }
 
-  router.setIncConnCB(callback)
+  connSwitch.setIncConnCB((conn) => {
+    // ACK
+    // create duplexStream
+    // ds.pipe(conn.out)
+    // conn.inc.pipe(ds)
+    // callback(ds)
+    var set = false
+    const ds = new Duplex({
+      read: function (n) {
+        if (set) {
+          return
+        }
+        set = true
+        conn.inc.on('data', (data) => {
+          this.push(data)
+        })
+      },
+      write: function (chunk, enc, next) {
+        conn.out.write(chunk)
+      }
+    })
+
+    conn.out.write('ACK')
+    callback(ds)
+  })
 
   return {
     listen: (callback) => {
@@ -8430,23 +8626,71 @@ function join (callback) {
   io.once('we-ready', callback)
 }
 
-},{"./channel":55,"./config":56,"./finger-table":57,"./message-router":59,"socket.io-client":40}],59:[function(require,module,exports){
+},{"./channel":54,"./config":55,"./connection-switch":56,"./finger-table":57,"socket.io-client":39,"stream":82}],59:[function(require,module,exports){
+(function (Buffer){
+const fingerTable = require('./finger-table')
+const Id = require('webrtc-explorer-peer-id')
+const config = require('./config')
+// const log = config.log
+const peerId = config.peerId
+const connSwitch = require('./connection-switch')
+
 exports = module.exports
 
-var incConnCB = () => {}
-const incConns = {}
+exports.route = (message) => {
+  // message struct
+  // {
+  //   srcId:
+  //   dstId:
+  //   connId:
+  //   leap:
+  //   data:
+  // }
 
-exports.setIncConnCB = (func) => {
-  incConnCB = func
+  // 1. check if it is for me (by routing criteria or leap flag)
+  //   if yes, connSwitch.receiveMessage
+  //   if not, send
+  message = JSON.parse(message)
+  if (message.data.type === 'Buffer') {
+    message.data = new Buffer(message.data.data)
+  }
+  const dstId = new Id(message.dstId)
+
+  console.log('router: route -', message)
+
+  if (message.leap || peerId.toDec() >= dstId.toDec()) {
+    return connSwitch.receiveMessage(message)
+  }
+
+  send(message)
 }
 
-exports.routeMessage = (message) => {
-  // TODO
-  // 1. check if it is for me
-  // 2. if not, route to best hop
+exports.send = send
+function send (message) {
+  // send message to best next hop
+  // note: if the nextHop is on the other side of the loop, add leap flag
+
+  const nextHopId = new Id(fingerTable.nextHop(message.dstId))
+  console.log('next hop is:', nextHopId.toHex())
+  if (nextHopId.toDec() < peerId.toDec()) {
+    message.leap = true
+  }
+
+  var channel
+
+  Object.keys(fingerTable.table).forEach((row) => {
+    if (fingerTable.table[row].peerId === nextHopId.toHex()) {
+      channel = fingerTable.table[row].channel
+    }
+  })
+
+  console.log('router: send -', message)
+
+  channel.send(JSON.stringify(message))
 }
 
-},{}],60:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"./config":55,"./connection-switch":56,"./finger-table":57,"buffer":62,"webrtc-explorer-peer-id":51}],60:[function(require,module,exports){
 ;(function (exports) {
   'use strict'
 
@@ -10573,8 +10817,8 @@ module.exports = function (obj) {
 }
 
 },{}],69:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"dup":33}],70:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"dup":32}],70:[function(require,module,exports){
 (function (process){
 'use strict';
 

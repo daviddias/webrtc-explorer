@@ -4,7 +4,7 @@
   "description": "Chord inspired ring DHT algorithm using WebRTC as transport layer for P2P in the browser",
   "main": "src/explorer/index.js",
   "bin": {
-    "sig-server": "node src/sig-server/bin"
+    "sig-server": "src/sig-server/bin.js"
   },
   "scripts": {
     "lint": "standard",
@@ -14,7 +14,9 @@
     "sig-server": "node src/sig-server"
   },
   "standard": {
-    "ignore": ["examples/explorer-b.js"]
+    "ignore": [
+      "examples/bundle.js"
+    ]
   },
   "precommit": [
     "lint",

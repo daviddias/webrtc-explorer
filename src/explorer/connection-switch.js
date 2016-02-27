@@ -1,5 +1,6 @@
 const stream = require('stream')
-const Duplex = stream.Duplex
+const PassThrough = stream.PassThrough
+const Writable = stream.Writable
 const router = require('./message-router')
 const config = require('./config')
 // const log = config.log
@@ -41,7 +42,8 @@ exports.receiveMessage = (message) => {
       connections[message.connId].inc.write(message.data)
     } else {
       console.log('received SYN:', message.data)
-      const conn = createConn(message.srcId, message.dstId)
+      // we got to invert srcId and dstId so that messages are routed back
+      const conn = createConn(message.dstId, message.srcId, message.connId)
       incConnCB(conn)
     }
   } else {
@@ -56,16 +58,18 @@ exports.receiveMessage = (message) => {
 }
 
 exports.createConn = createConn
-function createConn (srcId, dstId) {
+function createConn (srcId, dstId, connId) {
   // create a duplex stream pair
   // out.on('data') encapsulate chunk with: connId, srcId, dstId and then router.send(message)
   //
+  console.log('creating conn')
 
-  const connId = (~~(Math.random() * 1e9)).toString(36) + Date.now()
-  const out = new Duplex()
-  const inc = new Duplex()
+  connId = connId || (~~(Math.random() * 1e9)).toString(36) + Date.now()
 
-  out.on('data', (data) => {
+  const out = new Writable()
+  const inc = new PassThrough()
+
+  out._write = (data, enc, cb) => {
     const message = {
       connId: connId,
       data: data,
@@ -73,7 +77,8 @@ function createConn (srcId, dstId) {
       dstId: dstId
     }
     router.send(message)
-  })
+    cb()
+  }
 
   connections[connId] = {
     inc: inc,
