@@ -1,31 +1,22 @@
-webrtc-explorer
-===============
-
-> **tl;dr** `webrtc-explorer` is a [Chord][chord-paper] inspired P2P overlay network designed for the Web platform (browsers), using WebRTC as its transport between peers and WebSockets for Signaling data. Essentially, it enables your peers (browsers) to communicate between each other without the need to have a server as a mediator of messages.
+![](/graphs/webrtc-explorer-logo-small.png)
 
 [![Dependency Status](https://david-dm.org/diasdavid/webrtc-explorer.svg)](https://david-dm.org/diasdavid/webrtc-explorer)
 [![](https://img.shields.io/badge/project-WebCompute-blue.svg?style=flat-square)](https://github.com/diasdavid/WebCompute)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 
+![](https://raw.githubusercontent.com/diasdavid/interface-connection/master/img/badge.png)
+![](https://raw.githubusercontent.com/diasdavid/interface-transport/master/img/badge.png)
 
-# Properties
-
-- Ids have 48 bits (so that is a multiple of 4 (for hex notation) and doesn't require importing a big-num lib to handle over 53 bits operations)
-- The number of fingers of each peer is flexible, however it is recommended to not pass 16 per node (due to browser resource constraints)
-- Each peer is responsible for a segment of the hash ring
-- The signaling server for webrtc-explorer can be found at: https://github.com/diasdavid/webrtc-explorer-signalling-server
+> **tl;dr** `webrtc-explorer` is a [Chord][http://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf] inspired, P2P Network Routing Overlay designed for the Web platform (browsers), using WebRTC as its layer of transport between peers and WebSockets for the exchange of signalling data (setting up a connection and NAT traversal). Essentially, webrtc-explorer enables your peers (browsers) to communicate between each other without the need to have a server to be the mediator.
 
 # Usage
 
 `webrtc-explorer` uses [browserify](http://browserify.org)
 
-
-
 ### Create a new peer
 
 ```javascript
-var Explorer = require('webrtc-explorer')
-var peer = new Explorer(options)
+var explorer = require('webrtc-explorer')
 ```
 
 ### listen
@@ -36,15 +27,27 @@ var peer = new Explorer(options)
 
 ### updateFingerTable
 
-# How does it work
+
+# Architecture
+
+## Signalling
+
+## Routing
 
 To understand fully webrtc-explorer's core, it is important to be familiar with the [Chord][chord-paper].
 
-### Finger Table
+## Connections
 
-### Routing Messages (dialing)
+## Notes and other properties
 
-### Signalling (because WebRTC)
+- Ids have 48 bits (so that is a multiple of 4 (for hex notation) and doesn't require importing a big-num lib to handle over 53 bits operations)
+- The number of fingers of each peer is flexible, however it is recommended to not pass 16 per node (due to browser resource constraints)
+- Each peer is responsible for a segment of the hash ring
+
+
+
+
+
 
 
 
@@ -66,10 +69,3 @@ More info on the team's work at:
 If you use this project, please acknowledge it in your work by referencing the following document:
 
 David Dias and Luís Veiga. browserCloud.js A federated community cloud served by a P2P overlay network on top of the web platform. INESC-ID Tec. Rep. 14/2015, Apr. 2015
-
-
-
-
-[chord-paper]: http://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf
-
-
