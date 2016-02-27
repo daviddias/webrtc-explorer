@@ -40,7 +40,7 @@
   "dependencies": {
     "debug": "^2.2.0",
     "hapi": "^13.0.0",
-    "simple-peer": "^5.12.0",
+    "simple-peer": "^6.0.1",
     "socket.io": "^1.4.5",
     "socket.io-client": "^1.4.5",
     "webrtc-explorer-peer-id": "^1.1.0"
