@@ -53,6 +53,11 @@ exports.forMe = (dstId) => {
 
 // Identify the best candidate to send when sending to destId
 exports.nextHop = (dstId) => {
+  if (typeof dstId === 'object') {
+    dstId = dstId.toDec()
+  } else {
+    dstId = new Id(dstId).toDec()
+  }
   var lower = config.peerId
   var next
 

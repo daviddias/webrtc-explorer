@@ -19,6 +19,7 @@ exports.receiveMessage = (message) => {
   //   srcId:
   //   dstId:
   //   connId:
+  //   leap:
   //   data:
   // }
 
@@ -30,9 +31,9 @@ exports.receiveMessage = (message) => {
   //   if not, send message back saying that Id doesn't exist
 }
 
-exports.createConn = () => {
+exports.createConn = (srcId, dstId) => {
   // TODO
   // create a duplex stream pair
-  // out.on('data') encapsulate chunk with: connId, srcId, dstid and put chunk on data
+  // out.on('data') encapsulate chunk with: connId, srcId, dstId and then router.send(message)
   //
 }

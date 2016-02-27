@@ -27,7 +27,7 @@ exports.connect = (io, dstId, callback) => {
 
     channel.on('connect', function () {
       // console.log('channel ready to send')
-      channel.on('message', function () {
+      channel.on('data', function () {
         console.log('DEBUG: this channel should be only used to send and not to receive')
       })
       callback(null, channel)
@@ -51,7 +51,7 @@ exports.accept = function (io) {
 
     channel.on('connect', function () {
       // console.log('channel ready to listen')
-      channel.on('message', router.route)
+      channel.on('data', router.route)
     })
 
     channel.on('signal', function (signal) {
