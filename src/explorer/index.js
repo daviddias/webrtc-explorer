@@ -4,15 +4,17 @@ const log = config.log
 const fingerTable = require('./finger-table')
 const connSwitch = require('./connection-switch')
 const channel = require('./channel')
+const stream = require('stream')
+const Duplex = stream.Duplex
+const peerId = config.peerId
 
-console.log('My peerId:', config.peerId.toHex())
+console.log('My peerId:', peerId.toHex())
 
 var io
 
 exports = module.exports
 
 exports.dial = (dstId, callback) => {
-  // TODO
   // create a duplex stream
   // create a conn
   // write a SYN to conn.out
@@ -20,6 +22,21 @@ exports.dial = (dstId, callback) => {
   //   conn.inc.pipe(ds)
   //   ds.pipe(conn.out)
   //   callback(to signal that it is ready)
+  const ds = new Duplex()
+  const conn = connSwitch.createConn(peerId.toHex(), dstId)
+  conn.out.write('SYN')
+  conn.inc.once('data', (data) => {
+    console.log('received ACK:', data)
+    if (data === 'ACK') {
+      conn.inc.pipe(ds)
+      ds.pipe(conn.out)
+      if (callback) {
+        callback(ds)
+      }
+    }
+  })
+
+  return ds
 }
 
 exports.createListener = (options, callback) => {
@@ -28,7 +45,18 @@ exports.createListener = (options, callback) => {
     options = {}
   }
 
-  connSwitch.setIncConnCB(callback)
+  connSwitch.setIncConnCB((conn) => {
+    // ACK
+    // create duplexStream
+    // ds.pipe(conn.out)
+    // conn.inc.pipe(ds)
+    // callback(ds)
+    conn.out.write('ACK')
+    const ds = new Duplex()
+    ds.pipe(conn.out)
+    conn.inc.pipe(ds)
+    callback(ds)
+  })
 
   return {
     listen: (callback) => {
