@@ -84,13 +84,27 @@ explorer.updateFingerTable(<row>)
 
 # Architecture
 
+![](/graphs/overview.jpg)
+
 ## Signalling
+
+Currently signalling is performed through a central server. The signalling throught the Chord routing is under development.
+
+![](/graphs/signalling.jpg)
 
 ## Routing
 
 To understand fully webrtc-explorer's core, it is important to be familiar with the [Chord][chord-paper].
 
-## Connections
+I've delivered a talk before about an earlier version of webrtc-explorer, where I explain the routing scheme, you can find it here: https://youtu.be/fNQGGGE__zI?t=13m33s
+
+![](/graphs/routing.jpg)
+
+## Connection State
+
+Connections in webrtc-explorer are very similar to typical network socket. Before going to the network, the messages are encasulated with srcId and dstId so that they be routed through the Chord routing (parallel to the encasulation with TCP headers, IP headers, etc)
+
+![](/graphs/connection-state.jpg)
 
 ## Notes and other properties
 

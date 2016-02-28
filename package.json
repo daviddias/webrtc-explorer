@@ -1,6 +1,6 @@
 {
   "name": "webrtc-explorer",
-  "version": "2.0.0-alpha-v1",
+  "version": "2.0.0-alpha-v0",
   "description": "P2P Network Routing Overlay designed for the Web platform (browsers) ",
   "main": "src/explorer/index.js",
   "bin": {
